@@ -2,118 +2,142 @@
 -- @config Vlayer
 
 return {
-    update_tick_storage = 60,
-    update_tick_energy = 10,
-    update_tick_surface = 3600,
-    update_tick_gui = 300,
-    -- Cheat options
-    surface_selected = 'nauvis',
-    always_day = false, -- force if true
-    solar_power_multiplier = 1, -- force if not 1
-    unlimited_capacity = false,
-    unlimited_surface_area = false,
-    interface_limit = {
-        energy = 1, -- >1 allows for disconnected networks
-        circuit = 10, -- No caveats
-        storage_input = 10, -- No caveats
-        storage_output = 1 -- >0 allows for item teleportation (allowed_items only)
+    update_tick = 10,
+    update_tick_storage = 6,
+    update_tick_power = 1,
+    -- MW and MJ
+    default_energy = {
+        ['solar-panel'] = 0.06,
+        ['accumulator'] = 5
     },
-    allowed_items = {
+    land = {
+        enabled = false,
+        init_value = 100,
+        tile = 'landfill',
+        result = 4,
+        requirement = {
+            ['solar-panel'] = 9,
+            ['accumulator'] = 4
+        }
+    },
+    always_day = false,
+    battery_limit = true,
+    -- setting to a value greater than 1
+    -- will allow wireless energy or item transfer
+    interface_limit = {
+        ['storage_input'] = 2000,
+        ['storage_output'] = 2000,
+        ['energy'] = 1,
+        ['circuit'] = 500
+    },
+    init_item = {
         ['solar-panel'] = {
-            starting_value = 0,
-            required_area = 9,
-            production = 0.06 -- MW
+            enabled = true,
+            circuit = true,
+            direct = false,
+            value = 10
         },
         ['accumulator'] = {
-            starting_value = 0,
-            required_area = 4,
-            capacity = 5 -- MJ
+            enabled = true,
+            circuit = true,
+            direct = false,
+            value = 10
         },
-        ['landfill'] = {
-            starting_value = 0,
-            required_area = 0,
-            surface_area = 4 -- Tiles
+        -- Can convert wood directly to energy to reduce trash
+        ['wood'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
         },
-        -- TODO: Can convert wood directly to energy to reduce trash
-        --[[
-        ['wood'] = {},
-        ['coal'] = {},
-        ['stone'] = {},
-        ['iron-ore'] = {},
-        ['copper-ore'] = {},
-        ['uranium-ore'] = {},
-        ]]
+        ['coal'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
+        },
+        ['stone'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
+        },
+        ['iron-ore'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
+        },
+        ['copper-ore'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
+        },
+        ['uranium-ore'] = {
+            enabled = true,
+            circuit = true,
+            direct = true,
+            value = 0
+        }
     },
-    modded_items = {
+    -- for modded power
+    init_item_m = {
         ['solar-panel-2'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 4
+            n = 'solar-panel',
+            m = 4
         },
         ['solar-panel-3'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 16
+            n = 'solar-panel',
+            m = 16
         },
         ['solar-panel-4'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 64
+            n = 'solar-panel',
+            m = 64
         },
         ['solar-panel-5'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 256
+            n = 'solar-panel',
+            m = 256
         },
         ['solar-panel-6'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 1024
+            n = 'solar-panel',
+            m = 1024
         },
         ['solar-panel-7'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 4096
+            n = 'solar-panel',
+            m = 4096
         },
         ['solar-panel-8'] = {
-            starting_value = 0,
-            base_game_equivalent = 'solar-panel',
-            multiplier = 16384
+            n = 'solar-panel',
+            m = 16384
         },
         ['accumulator-2'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 4
+            n = 'accumulator',
+            m = 4
         },
         ['accumulator-3'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 16
+            n = 'accumulator',
+            m = 16
         },
         ['accumulator-4'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 64
+            n = 'accumulator',
+            m = 64
         },
         ['accumulator-5'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 256
+            n = 'accumulator',
+            m = 256
         },
         ['accumulator-6'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 1024
+            n = 'accumulator',
+            m = 1024
         },
         ['accumulator-7'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 4096
+            n = 'accumulator',
+            m = 4096
         },
         ['accumulator-8'] = {
-            starting_value = 0,
-            base_game_equivalent = 'accumulator',
-            multiplier = 16384
-        }
+            n = 'accumulator',
+            m = 16384
+        },
     }
 }
