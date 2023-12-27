@@ -433,7 +433,7 @@ local function handle_energy_interfaces()
         end
 
         -- Distribute the energy between all interfaces
-        local fill_to = math.min(mega10, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
+        local fill_to = math.min(average_capacity, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
 
         for index, interface in pairs(vlayer_data.entity_interfaces.energy) do
             interface.electric_buffer_size = average_capacity
