@@ -12,7 +12,7 @@ local vlayer_container
 
 local function format_energy(amount, unit)
     if amount < 1 then
-        return '0' .. unit
+        return '0 ' .. unit
     end
 
     local suffix = ''
@@ -42,7 +42,7 @@ local function format_energy(amount, unit)
         end
     end
 
-    return formatted .. ' ' .. suffix .. unit
+    return formatted .. suffix .. ' ' .. unit
 end
 
 local function vlayer_convert_chest(player)
