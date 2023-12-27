@@ -4,7 +4,7 @@
 return {
     update_tick_storage = 60,
     update_tick_energy = 10,
-    update_tick_surface = 3600,
+    update_tick_surface = 900,
     update_tick_gui = 300,
     -- Cheat options
     surface_selected = 'nauvis',
