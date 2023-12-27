@@ -42,6 +42,7 @@ end)
 for item_name, properties in pairs(config.modded_items) do
     local base_properties = config.allowed_items[properties.base_game_equivalent]
     local m = properties.multiplier
+
     config.allowed_items[item_name] = {
         starting_value = properties.starting_value or 0,
         required_area = base_properties.required_area or 0,
