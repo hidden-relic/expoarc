@@ -25,7 +25,7 @@ return {
             production = 0.06 -- MW
         },
         ['accumulator'] = {
-            starting_value = 0,
+            starting_value = 2,
             required_area = 4,
             capacity = 5 -- MJ
         },

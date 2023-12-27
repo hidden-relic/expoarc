@@ -7,7 +7,6 @@ local config = require 'config.vlayer' --- @dep config.vlayer
 local move_items_stack = _C.move_items_stack
 
 local mega = 1000000
-local mega10 = 10 * mega
 
 local vlayer = {}
 local vlayer_data = {
@@ -404,7 +403,7 @@ function vlayer.create_energy_interface(surface, pos, last_user)
     interface.destructible = false
     interface.minable = false
     interface.operable = false
-    interface.electric_buffer_size = mega10
+    interface.electric_buffer_size = 0
     interface.power_production = 0
     interface.power_usage = 0
     interface.energy = 0
@@ -416,7 +415,7 @@ end
 local function handle_energy_interfaces()
     -- Add the newly produced power
     local production = vlayer_data.properties.production * mega * (config.update_tick_energy / 60) * vlayer_data.surface.solar_power_multiplier
-    local average_capacity = (vlayer_data.properties.capacity * mega + mega10) / #vlayer_data.entity_interfaces.energy
+    local average_capacity = (vlayer_data.properties.capacity * mega) / #vlayer_data.entity_interfaces.energy
     vlayer_data.storage.energy = vlayer_data.storage.energy + math.floor(production * get_time_multiplier())
     -- .electric_buffer_size
     -- Calculate how much power is present in the network, that is storage + all interfaces
