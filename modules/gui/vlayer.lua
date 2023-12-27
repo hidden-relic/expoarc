@@ -120,8 +120,7 @@ Gui.element{
     type = 'label',
     name = 'vlayer_display_signal_peak_solar_count',
     caption = '0',
-    style = 'heading_1_label',
-    tooltip = 'MW'
+    style = 'heading_1_label'
 }:style{
     width = 120
 }
@@ -141,8 +140,7 @@ Gui.element{
     type = 'label',
     name = 'vlayer_display_signal_sustained_count',
     caption = '0',
-    style = 'heading_1_label',
-    tooltip = 'MW'
+    style = 'heading_1_label'
 }:style{
     width = 120
 }
@@ -162,8 +160,7 @@ Gui.element{
     type = 'label',
     name = 'vlayer_display_signal_max_count',
     caption = '0',
-    style = 'heading_1_label',
-    tooltip = 'MJ'
+    style = 'heading_1_label'
 }:style{
     width = 120
 }
@@ -183,8 +180,7 @@ Gui.element{
     type = 'label',
     name = 'vlayer_display_signal_current_count',
     caption = '0',
-    style = 'heading_1_label',
-    tooltip = 'MJ'
+    style = 'heading_1_label'
 }:style{
     width = 120
 }
