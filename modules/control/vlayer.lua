@@ -415,7 +415,7 @@ end
 --- Handle all energy interfaces as well as the energy storage
 local function handle_energy_interfaces()
     -- Add the newly produced power
-    local production = vlayer_data.properties.production * mega / config.update_tick_energy * vlayer_data.surface.solar_power_multiplier
+    local production = vlayer_data.properties.production * mega * (config.update_tick_energy / 60) * vlayer_data.surface.solar_power_multiplier
     vlayer_data.storage.energy = vlayer_data.storage.energy + math.floor(production * get_time_multiplier())
 
     -- Calculate how much power is present in the network, that is storage + all interfaces
