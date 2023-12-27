@@ -5,7 +5,7 @@ return {
     update_tick_storage = 60,
     update_tick_energy = 10,
     update_tick_surface = 900,
-    update_tick_gui = 300,
+    update_tick_gui = 240,
     -- Cheat options
     surface_selected = 'nauvis',
     always_day = false, -- force if true
