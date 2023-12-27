@@ -436,7 +436,7 @@ local function handle_energy_interfaces()
         local fill_to = math.min(mega10, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
 
         for index, interface in pairs(vlayer_data.entity_interfaces.energy) do
-            vlayer_data.entity_interfaces.electric_buffer_size = average_capacity
+            interface.electric_buffer_size = average_capacity
             local delta = fill_to - interface.energy -- positive means storage to interface
             vlayer_data.storage.energy = vlayer_data.storage.energy - delta
             interface.energy = interface.energy + delta
