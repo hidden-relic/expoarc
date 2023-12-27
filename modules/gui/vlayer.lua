@@ -42,7 +42,7 @@ local function format_energy(amount, unit)
         end
     end
 
-    return formatted .. suffix .. ' ' .. unit
+    return formatted .. ' ' .. suffix .. unit
 end
 
 local function vlayer_convert_chest(player)
