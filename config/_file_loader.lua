@@ -95,7 +95,6 @@ return {
     'modules.gui.vlayer',
     'modules.gui.research',
     'modules.gui.module',
-    'modules.gui.playerdata',
     'modules.gui.surveillance',
     'modules.gui.playerdata',
     -- 'modules.gui.linked',

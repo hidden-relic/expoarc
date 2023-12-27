@@ -58,17 +58,6 @@ local function format_clock(value)
     })
 end
 
---- Used to format time into a clock
-local function format_clock(value)
-    return format_time(value*3600, {
-        hours=true,
-        minutes=true,
-        seconds=false,
-        time=false,
-        string=true
-    })
-end
-
 --- Add MapsPlayed if it is enabled
 if config.MapsPlayed then
     Statistics:combine('MapsPlayed')
