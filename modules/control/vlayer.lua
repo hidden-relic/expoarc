@@ -92,7 +92,6 @@ local function get_production_multiplier()
         return mul
     end
     
-    --[[
     local tick = game.tick % vlayer_data.surface.ticks_per_day
 
     if vlayer_data.surface.daytime <= vlayer_data.surface.dusk then -- Noon to Sunset
@@ -110,9 +109,8 @@ local function get_production_multiplier()
     else -- Morning to Noon
         return mul
     end
-    ]]
 
-    return mul * math.max(0, (vlayer_data.surface.darkness - vlayer_data.surface.min_brightness) / (1 - vlayer_data.surface.min_brightness))
+    -- return mul * math.max(0, (1 - vlayer_data.surface.min_brightness - vlayer_data.surface.darkness) / (1 - vlayer_data.surface.min_brightness))
 end
 
 --- Get the sustained power multiplier, this needs improving
