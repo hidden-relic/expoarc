@@ -77,11 +77,11 @@ end
     夜      41秒    ソーラー発電量が0%になる
     朝方    83秒    1秒ごとにソーラー発電量が約1.2%ずつ上がり、やがて100%になる
 
-    (surface.dawn)      0.75    18750   Day         12,500  208s
+    (surface.dawn)      0.75    18,750   Day         12,500  208s
                         0.00    0       Noon
-    (surface.dusk)      0.25    6250    Sunset      5,000   83s
-    (surface.evening)   0.45    11250   Night       2,500   41s
-    (surface.morning)   0.55    13750   Sunrise     5,000   83s
+    (surface.dusk)      0.25    6,250    Sunset      5,000   83s
+    (surface.evening)   0.45    11,250   Night       2,500   41s
+    (surface.morning)   0.55    13,750   Sunrise     5,000   83s
 ]]
 
 --- Get the power multiplier based on the surface time
