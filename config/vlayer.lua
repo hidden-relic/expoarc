@@ -35,13 +35,15 @@ return {
             starting_value = 0,
             required_area = 0,
             surface_area = 4 -- Tiles
-        },
+        }
         -- TODO: Can convert wood directly to energy to reduce trash
         --[[
         ['wood'] = {
             starting_value = 0,
             required_area = 0,
-            surface_area = 0
+            surface_area = 0,
+            fuel_input = true,
+            fuel_value = 2
         },
         ['iron-ore'] = {
             starting_value = 0,
