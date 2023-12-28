@@ -17,7 +17,9 @@ return {
         dusk = 0.25,
         dawn = 0.75,
         evening = 0.45,
-        morning = 0.55
+        morning = 0.55,
+        darkness = 0.15,
+        min_brightness = 0.15
     },
     interface_limit = {
         energy = 1, -- >1 allows for disconnected networks
