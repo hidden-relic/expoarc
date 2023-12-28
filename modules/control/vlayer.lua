@@ -35,6 +35,10 @@ Global.register(vlayer_data, function(tbl)
     vlayer_data = tbl
 end)
 
+for _, properties in pairs(config.allowed_items) do
+    properties.modded = false
+end
+
 -- For all modded items, create a config for them
 for item_name, properties in pairs(config.modded_items) do
     local base_properties = config.allowed_items[properties.base_game_equivalent]
@@ -46,6 +50,7 @@ for item_name, properties in pairs(config.modded_items) do
         surface_area = (base_properties.surface_area or 0) * m,
         production = (base_properties.production or 0) * m,
         capacity = (base_properties.capacity or 0) * m,
+        modded = true
     }
 end
 
@@ -86,26 +91,28 @@ local function get_production_multiplier()
     if vlayer_data.surface.always_day then
         return mul
     end
+    
+    --[[
+    local tick = game.tick % vlayer_data.surface.ticks_per_day
 
-    -- TODO maybe link this into vlayer_data.surface
-    -- 25000 ticks per day, 0 is noon
-    local tick = game.tick % 25000
-
-    if tick <= 6250 then -- Noon to Sunset
+    if vlayer_data.surface.daytime <= vlayer_data.surface.dusk then -- Noon to Sunset
         return mul
 
-    elseif tick <= 11250 then -- Sunset to Night
-        return mul * (1 - ((tick - 6250) / 5000))
+    elseif vlayer_data.surface.daytime <= vlayer_data.surface.evening then -- Sunset to Night
+        return mul * (1 - ((vlayer_data.surface.daytime - vlayer_data.surface.dusk) / (vlayer_data.surface.evening - vlayer_data.surface.dusk)))
 
-    elseif tick <= 13750 then -- Night to Sunrise
+    elseif vlayer_data.surface.daytime <= vlayer_data.surface.morning then -- Night to Sunrise
         return 0
 
-    elseif tick <= 18750 then -- Sunrise to Morning
-        return mul * ((tick - 13750) / 5000)
+    elseif vlayer_data.surface.daytime <= vlayer_data.surface.dawn then -- Sunrise to Morning
+        return mul * ((vlayer_data.surface.daytime - vlayer_data.surface.morning) / (vlayer_data.surface.dawn - vlayer_data.surface.morning))
 
     else -- Morning to Noon
         return mul
     end
+    ]]
+
+    return mul * math.max(0, darkness - min_brightness)
 end
 
 --- Get the sustained power multiplier, this needs improving
@@ -116,8 +123,7 @@ local function get_sustained_multiplier()
         return mul
     end
 
-    -- TODO maybe link this into vlayer_data.surface
-    return mul * 291 / 416
+    return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
 end
 
 --- Internal, Allocate items in the vlayer, this will increase the property values of the vlayer such as production and capacity
@@ -186,9 +192,9 @@ end
 -- Can not always fulfil the remove request for items which provide surface area, therefore returns the amount actually removed
 function vlayer.remove_item(item_name, count)
     local item_properties = config.allowed_items[item_name]
-    assert(item_properties, "Item not allowed in vlayer: "..tostring(item_name))
-
+    assert(item_properties, 'Item not allowed in vlayer: ' .. tostring(item_name))
     local remove_unallocated = 0
+
     if not config.unlimited_surface_area and item_properties.required_area and item_properties.required_area > 0 then
         -- Remove from the unallocated storage first
         remove_unallocated = math.min(count, vlayer_data.storage.unallocated[item_name])
@@ -200,6 +206,7 @@ function vlayer.remove_item(item_name, count)
 
         -- Check if any more items need to be removed
         count = count - remove_unallocated
+
         if count == 0 then
             return remove_unallocated
         end
@@ -249,8 +256,14 @@ local function handle_input_interfaces()
 
             for name, count in pairs(inventory.get_contents()) do
                 if config.allowed_items[name] then
-                    vlayer.insert_item(name, count)
-                    inventory.remove({ name = name, count = count })
+                    if config.allowed_items[name].modded then
+                        vlayer.insert_item(config.modded_items[name].base_game_equivalent, count * config.modded_items[name].multiplier)
+
+                    else
+                        vlayer.insert_item(name, count)
+                    end
+
+                    inventory.remove({name = name, count = count})
                 end
             end
         end
@@ -287,11 +300,11 @@ local function handle_output_interfaces()
                     local current_amount = inventory.get_item_count(request.name)
                     local request_amount = math.min(request.count - current_amount, vlayer_data.storage.items[request.name])
 
-                    if request_amount > 0 and inventory.can_insert({ name = request.name, count = request_amount }) then
+                    if request_amount > 0 and inventory.can_insert({name=request.name, count=request_amount}) then
                         local removed_item_count = vlayer.remove_item(request.name, request_amount)
 
                         if removed_item_count > 0 then
-                            inventory.insert({ name = request.name, count = removed_item_count })
+                            inventory.insert({name=request.name, count=removed_item_count})
                         end
                     end
                 end
@@ -340,8 +353,8 @@ function vlayer.get_statistics()
         energy_sustained = vlayer_data.properties.production * mega * get_sustained_multiplier(),
         energy_capacity = vlayer_data.properties.capacity * mega,
         energy_storage = vlayer_data.storage.energy,
-        day = math.floor(game.tick / 25000),
-        time = game.tick % 25000,
+        day = math.floor(game.tick / vlayer_data.surface.ticks_per_day),
+        time = game.tick % vlayer_data.surface.ticks_per_day,
     }
 end
 

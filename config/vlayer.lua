@@ -12,6 +12,12 @@ return {
     surface = {
         always_day = false,
         solar_power_multiplier = 1,
+        ticks_per_day = 25000,
+        daytime = 0
+        dusk = 0.25,
+        dawn = 0.75,
+        evening = 0.45,
+        morning = 0.55
     },
     interface_limit = {
         energy = 1, -- >1 allows for disconnected networks
