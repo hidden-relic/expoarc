@@ -465,7 +465,8 @@ end
 --- Handle all energy interfaces as well as the energy storage
 local function handle_energy_interfaces()
     -- Add the newly produced power
-    local production = vlayer_data.properties.production * mega * (config.update_tick_energy / 60)
+    local update_rate = config.update_tick_energy / 60
+    local production = vlayer_data.properties.production * mega * update_rate
     vlayer_data.storage.energy = vlayer_data.storage.energy + math.floor(production * get_production_multiplier())
 
     -- Calculate how much power is present in the network, that is storage + all interfaces
@@ -482,7 +483,7 @@ local function handle_energy_interfaces()
         end
 
         -- Distribute the energy between all interfaces
-        local discharge_rate = (production + vlayer_data.properties.discharge * mega) / #vlayer_data.entity_interfaces.energy
+        local discharge_rate = 2 * (production + vlayer_data.properties.discharge * mega) / #vlayer_data.entity_interfaces.energy
         local fill_to = math.min(discharge_rate, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
 
         for index, interface in pairs(vlayer_data.entity_interfaces.energy) do
