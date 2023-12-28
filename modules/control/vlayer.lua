@@ -130,8 +130,7 @@ local function get_sustained_multiplier()
         return mul
     end
 
-    return mul * 291 / 416
-    -- return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
+    return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
 end
 
 --- Internal, Allocate items in the vlayer, this will increase the property values of the vlayer such as production and capacity
