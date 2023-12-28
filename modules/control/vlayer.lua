@@ -130,6 +130,7 @@ local function get_sustained_multiplier()
         return mul
     end
 
+    -- For nauvis vanilla: 208s + (1/2 x (83s + 83s))
     return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
 end
 
