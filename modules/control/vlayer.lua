@@ -112,7 +112,7 @@ local function get_production_multiplier()
     end
     ]]
 
-    return mul * math.max(0, darkness - min_brightness)
+    return mul * math.max(0, vlayer_data.surface.darkness - vlayer_data.surface.min_brightness)
 end
 
 --- Get the sustained power multiplier, this needs improving
