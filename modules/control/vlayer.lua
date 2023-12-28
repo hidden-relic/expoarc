@@ -92,6 +92,7 @@ local function get_production_multiplier()
         return mul
     end
     
+    --[[
     local tick = game.tick % vlayer_data.surface.ticks_per_day
 
     if vlayer_data.surface.daytime <= vlayer_data.surface.dusk then -- Noon to Sunset
@@ -109,8 +110,16 @@ local function get_production_multiplier()
     else -- Morning to Noon
         return mul
     end
+    ]]
+    
+    local brightness = 1 - vlayer_data.surface.darkness
 
-    -- return mul * math.max(0, (1 - vlayer_data.surface.min_brightness - vlayer_data.surface.darkness) / (1 - vlayer_data.surface.min_brightness))
+    if brightness >= vlayer_data.surface.min_brightness then
+        return mul * (brightness - vlayer_data.surface.min_brightness) / (1 - vlayer_data.surface.min_brightness)
+
+    else
+        return 0
+    end
 end
 
 --- Get the sustained power multiplier, this needs improving
@@ -254,13 +263,15 @@ local function handle_input_interfaces()
 
             for name, count in pairs(inventory.get_contents()) do
                 if config.allowed_items[name] then
+                    --[[
                     if config.allowed_items[name].modded then
                         vlayer.insert_item(config.modded_items[name].base_game_equivalent, count * config.modded_items[name].multiplier)
 
                     else
                         vlayer.insert_item(name, count)
                     end
-
+                    ]]
+                    vlayer.insert_item(name, count)
                     inventory.remove({name=name, count=count})
                 end
             end
