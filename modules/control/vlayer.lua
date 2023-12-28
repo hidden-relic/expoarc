@@ -112,7 +112,7 @@ local function get_production_multiplier()
     end
     ]]
 
-    return mul * math.max(0, vlayer_data.surface.darkness - vlayer_data.surface.min_brightness)
+    return mul * math.max(0, (vlayer_data.surface.darkness - vlayer_data.surface.min_brightness) / (1 - vlayer_data.surface.min_brightness))
 end
 
 --- Get the sustained power multiplier, this needs improving
@@ -263,7 +263,7 @@ local function handle_input_interfaces()
                         vlayer.insert_item(name, count)
                     end
 
-                    inventory.remove({name = name, count = count})
+                    inventory.remove({name=name, count=count})
                 end
             end
         end
