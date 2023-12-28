@@ -91,7 +91,7 @@ local function get_production_multiplier()
     if vlayer_data.surface.always_day then
         return mul
     end
-    
+
     --[[
     local tick = game.tick % vlayer_data.surface.ticks_per_day
 
