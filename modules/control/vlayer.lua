@@ -130,7 +130,8 @@ local function get_sustained_multiplier()
         return mul
     end
 
-    return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
+    return mul * 291 / 416
+    -- return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
 end
 
 --- Internal, Allocate items in the vlayer, this will increase the property values of the vlayer such as production and capacity
@@ -263,15 +264,13 @@ local function handle_input_interfaces()
 
             for name, count in pairs(inventory.get_contents()) do
                 if config.allowed_items[name] then
-                    --[[
                     if config.allowed_items[name].modded then
                         vlayer.insert_item(config.modded_items[name].base_game_equivalent, count * config.modded_items[name].multiplier)
 
                     else
                         vlayer.insert_item(name, count)
                     end
-                    ]]
-                    vlayer.insert_item(name, count)
+
                     inventory.remove({name=name, count=count})
                 end
             end
