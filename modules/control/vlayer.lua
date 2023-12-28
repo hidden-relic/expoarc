@@ -20,6 +20,7 @@ local vlayer_data = {
         total_surface_area = 0,
         used_surface_area = 0,
         production = 0,
+        discharge = 0,
         capacity = 0,
     },
     storage = {
@@ -27,10 +28,7 @@ local vlayer_data = {
         energy = 0,
         unallocated = {}
     },
-    surface = {
-        always_day = false,
-        solar_power_multiplier = 1
-    }
+    surface = table.deep_copy(config.surface)
 }
 
 Global.register(vlayer_data, function(tbl)
@@ -82,9 +80,11 @@ end
 ]]
 
 --- Get the power multiplier based on the surface time
-local function get_time_multiplier()
+local function get_production_multiplier()
+    local mul = vlayer_data.surface.solar_power_multiplier
+
     if vlayer_data.surface.always_day then
-        return 1
+        return mul
     end
 
     -- TODO maybe link this into vlayer_data.surface
@@ -92,20 +92,32 @@ local function get_time_multiplier()
     local tick = game.tick % 25000
 
     if tick <= 6250 then -- Noon to Sunset
-        return 1
+        return mul
 
     elseif tick <= 11250 then -- Sunset to Night
-        return 1 - ((tick - 6250) / 5000)
+        return mul * (1 - ((tick - 6250) / 5000))
 
     elseif tick <= 13750 then -- Night to Sunrise
         return 0
 
     elseif tick <= 18750 then -- Sunrise to Morning
-        return (tick - 13750) / 5000
+        return mul * ((tick - 13750) / 5000)
 
     else -- Morning to Noon
-        return 1
+        return mul
     end
+end
+
+--- Get the sustained power multiplier, this needs improving
+local function get_sustained_multiplier()
+    local mul = vlayer_data.surface.solar_power_multiplier
+
+    if vlayer_data.surface.always_day then
+        return mul
+    end
+
+    -- TODO maybe link this into vlayer_data.surface
+    return mul * 291 / 416
 end
 
 --- Internal, Allocate items in the vlayer, this will increase the property values of the vlayer such as production and capacity
@@ -122,6 +134,10 @@ function vlayer.allocate_item(item_name, count)
 
     if item_properties.capacity then
         vlayer_data.properties.capacity = vlayer_data.properties.capacity + item_properties.capacity * count
+    end
+
+    if item_properties.discharge then
+        vlayer_data.properties.discharge = vlayer_data.properties.discharge + item_properties.discharge * count
     end
 
     if item_properties.surface_area then
@@ -320,8 +336,8 @@ function vlayer.get_statistics()
     return {
         total_surface_area = vlayer_data.properties.total_surface_area,
         used_surface_area = vlayer_data.properties.used_surface_area,
-        energy_production = vlayer_data.properties.production * mega * get_time_multiplier() * vlayer_data.surface.solar_power_multiplier,
-        energy_sustained = vlayer_data.properties.production * mega * (vlayer_data.surface.always_day and 1 or 291 / 416) * vlayer_data.surface.solar_power_multiplier,
+        energy_production = vlayer_data.properties.production * mega * get_production_multiplier(),
+        energy_sustained = vlayer_data.properties.production * mega * get_sustained_multiplier(),
         energy_capacity = vlayer_data.properties.capacity * mega,
         energy_storage = vlayer_data.storage.energy,
         day = math.floor(game.tick / 25000),
@@ -364,8 +380,10 @@ local function handle_circuit_interfaces()
 
         else
             local circuit_oc = interface.get_or_create_control_behavior()
+            local max_signals = circuit_oc.signals_count
             local signal_index = 1
 
+            -- Set the virtual signals based on the vlayer stats
             for stat_name, signal_name in pairs(circuit_signals) do
                 if stat_name:find('energy') then
                     circuit_oc.set_signal(signal_index, {signal={type='virtual', name=signal_name}, count=math.floor(stats[stat_name] / mega)})
@@ -377,11 +395,23 @@ local function handle_circuit_interfaces()
                 signal_index = signal_index + 1
             end
 
+            -- Set the item signals based on stored items
             for item_name, count in pairs(vlayer_data.storage.items) do
-                if game.item_prototypes[item_name] then
+                if game.item_prototypes[item_name] and count > 0 then
                     circuit_oc.set_signal(signal_index, {signal={type='item', name=item_name}, count=count})
                     signal_index = signal_index + 1
+                    if signal_index > max_signals then
+                        return -- No more signals can be added
+                    end
                 end
+            end
+
+            -- Clear remaining signals to prevent outdated values being present (caused by count > 0 check)
+            for clear_index = signal_index, max_signals do
+                if not circuit_oc.get_signal(clear_index).signal then
+                    break -- There are no more signals to clear
+                end
+                circuit_oc.set_signal(clear_index, nil)
             end
         end
     end
@@ -414,9 +444,8 @@ end
 --- Handle all energy interfaces as well as the energy storage
 local function handle_energy_interfaces()
     -- Add the newly produced power
-    local production = vlayer_data.properties.production * mega * (config.update_tick_energy / 60) * vlayer_data.surface.solar_power_multiplier
-    local average_capacity = (vlayer_data.properties.capacity * mega) / #vlayer_data.entity_interfaces.energy
-    vlayer_data.storage.energy = vlayer_data.storage.energy + math.floor(production * get_time_multiplier())
+    local production = vlayer_data.properties.production * mega * (config.update_tick_energy / 60)
+    vlayer_data.storage.energy = vlayer_data.storage.energy + math.floor(production * get_production_multiplier())
     -- Calculate how much power is present in the network, that is storage + all interfaces
     if #vlayer_data.entity_interfaces.energy > 0 then
         local available_energy = vlayer_data.storage.energy
@@ -431,10 +460,11 @@ local function handle_energy_interfaces()
         end
 
         -- Distribute the energy between all interfaces
-        local fill_to = math.min(average_capacity, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
+        local discharge_rate = 2 * (production + vlayer_data.properties.discharge * mega) / #vlayer_data.entity_interfaces.energy
+        local fill_to = math.min(discharge_rate, math.floor(available_energy / #vlayer_data.entity_interfaces.energy))
 
         for index, interface in pairs(vlayer_data.entity_interfaces.energy) do
-            interface.electric_buffer_size = average_capacity
+            interface.electric_buffer_size = math.max(discharge_rate, interface.energy) -- prevent energy loss
             local delta = fill_to - interface.energy -- positive means storage to interface
             vlayer_data.storage.energy = vlayer_data.storage.energy - delta
             interface.energy = interface.energy + delta
@@ -492,19 +522,19 @@ function vlayer.remove_closest_interface(surface, position, radius)
     end
 end
 
-local function update_surface_handle()
-    if config.always_day == true then
-        vlayer_data.surface.always_day = true
+local function on_surface_event()
+    if config.mimic_surface then
+        local surface = game.get_surface(config.mimic_surface)
 
-    else
-        vlayer_data.surface.always_day = game.surfaces[config.surface_selected].always_day
+        if surface then
+            vlayer_data.surface = surface
+            return
+        end
     end
 
-    if config.solar_power_multiplier ~= 1 then
-        vlayer_data.surface.solar_power_multiplier = config.solar_power_multiplier
-
-    else
-        vlayer_data.surface.solar_power_multiplier = game.surfaces[config.surface_selected].solar_power_multiplier
+    if not vlayer_data.surface.index then
+        -- Our fake surface data never has an index, we test for this to avoid unneeded copies from the config
+        vlayer_data.surface = table.deep_copy(config.surface)
     end
 end
 
@@ -521,8 +551,9 @@ Event.on_nth_tick(config.update_tick_energy, function(_)
     handle_energy_interfaces()
 end)
 
-Event.on_nth_tick(config.update_tick_surface, function(_)
-    update_surface_handle()
-end)
+Event.add(defines.events.on_surface_created, on_surface_event)
+Event.add(defines.events.on_surface_renamed, on_surface_event)
+Event.add(defines.events.on_surface_imported, on_surface_event)
+Event.on_init(on_surface_event) -- Default surface always exists, does not trigger on_surface_created
 
 return vlayer
