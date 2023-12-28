@@ -38,12 +38,36 @@ return {
         },
         -- TODO: Can convert wood directly to energy to reduce trash
         --[[
-        ['wood'] = {},
-        ['coal'] = {},
-        ['stone'] = {},
-        ['iron-ore'] = {},
-        ['copper-ore'] = {},
-        ['uranium-ore'] = {},
+        ['wood'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
+        ['iron-ore'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
+        ['copper-ore'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
+        ['coal'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
+        ['stone'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
+        ['uranium-ore'] = {
+            starting_value = 0,
+            required_area = 0,
+            surface_area = 0
+        },
         ]]
     },
     modded_items = {
