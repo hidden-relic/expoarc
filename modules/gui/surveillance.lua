@@ -157,7 +157,7 @@ Event.add(defines.events.on_tick, function(_)
             local switch_index = current_camera_set.buttons.table[cctv_status.name].selected_index
 
             if switch_index == 1 then
-                local selected_index = current_camera_set.buttons.table[cctv_player.name].selected_index
+                local selected_index = current_camera_set.buttons.table[cctv_player.name].items[current_camera_set.buttons.table[cctv_player.name].selected_index]
 
                 if selected_index > 0 then
                     current_camera_set['cctv_display'].position = game.players[selected_index].position
