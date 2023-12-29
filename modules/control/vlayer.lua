@@ -1,5 +1,8 @@
---- Adds a virtual layer to store power to save space.
--- @addon Virtual Layer
+--[[-- Control Module - vlayer
+    - Adds a virtual layer to store power to save space.
+    @control vlayer
+    @alias vlayer
+]]
 
 local Global = require 'utils.global' --- @dep utils.global
 local Event = require 'utils.event' --- @dep utils.event
@@ -55,13 +58,16 @@ for item_name, properties in pairs(config.modded_items) do
 end
 
 --- Get all items in storage, do not modify
+-- @treturn table a dictionary of all items stored in the vlayer
 function vlayer.get_items()
     return vlayer_data.storage.items
 end
 
 --- Get interface counts
+-- @treturn table a dictionary of the vlayer interface counts
 function vlayer.get_interface_counts()
     local interfaces = vlayer_data.entity_interfaces
+
     return {
         energy = #interfaces.energy,
         circuit = #interfaces.circuit,
@@ -87,57 +93,71 @@ end
 --- Get the power multiplier based on the surface time
 local function get_production_multiplier()
     local mul = vlayer_data.surface.solar_power_multiplier
+    local surface = vlayer_data.surface
 
-    if vlayer_data.surface.always_day then
+    if surface.always_day then
+        -- Surface is always day, so full production is used
         return mul
     end
 
-    --[[
-    local tick = game.tick % vlayer_data.surface.ticks_per_day
+    if surface.darkness then
+        -- We are using a real surface, our config does not contain 'darkness'
+        local brightness = 1 - surface.darkness
 
-    if vlayer_data.surface.daytime <= vlayer_data.surface.dusk then -- Noon to Sunset
+        if brightness >= surface.min_brightness then
+            return mul * (brightness - surface.min_brightness) / (1 - surface.min_brightness)
+
+        else
+            return 0
+        end
+    end
+
+    -- Caused by using a set config rather than a surface
+    local tick = game.tick % surface.ticks_per_day
+    local daytime = tick / surface.ticks_per_day
+    surface.daytime = daytime
+
+    if daytime <= surface.dusk then -- Noon to Sunset
         return mul
 
-    elseif vlayer_data.surface.daytime <= vlayer_data.surface.evening then -- Sunset to Night
-        return mul * (1 - ((vlayer_data.surface.daytime - vlayer_data.surface.dusk) / (vlayer_data.surface.evening - vlayer_data.surface.dusk)))
+    elseif daytime <= surface.evening then -- Sunset to Night
+        return mul * (1 - ((daytime - surface.dusk) / (surface.evening - surface.dusk)))
 
-    elseif vlayer_data.surface.daytime <= vlayer_data.surface.morning then -- Night to Sunrise
+    elseif daytime <= surface.morning then -- Night to Sunrise
         return 0
 
-    elseif vlayer_data.surface.daytime <= vlayer_data.surface.dawn then -- Sunrise to Morning
-        return mul * ((vlayer_data.surface.daytime - vlayer_data.surface.morning) / (vlayer_data.surface.dawn - vlayer_data.surface.morning))
+    elseif daytime <= surface.dawn then -- Sunrise to Morning
+        return mul * ((surface.daytime - surface.morning) / (surface.dawn - surface.morning))
 
     else -- Morning to Noon
         return mul
-    end
-    ]]
-
-    local brightness = 1 - vlayer_data.surface.darkness
-
-    if brightness >= vlayer_data.surface.min_brightness then
-        return mul * (brightness - vlayer_data.surface.min_brightness) / (1 - vlayer_data.surface.min_brightness)
-
-    else
-        return 0
     end
 end
 
 --- Get the sustained power multiplier, this needs improving
 local function get_sustained_multiplier()
     local mul = vlayer_data.surface.solar_power_multiplier
+    local surface = vlayer_data.surface
 
-    if vlayer_data.surface.always_day then
+    if surface.always_day then
+        -- Surface is always day, so full production is used
         return mul
     end
 
     -- For nauvis vanilla: 208s + (1/2 x (83s + 83s))
-    return mul * ((1 - vlayer_data.surface.dawn + vlayer_data.surface.dusk) + (0.5 * (vlayer_data.surface.evening - vlayer_data.surface.dusk + vlayer_data.surface.dawn - vlayer_data.surface.morning)))
+    local day_duration = 1 - surface.dawn + surface.dusk
+    local sunset_duration = surface.evening - surface.dusk
+    local sunrise_duration = surface.dawn - surface.morning
+
+    return mul * (day_duration + (0.5 * (sunset_duration + sunrise_duration)))
 end
 
 --- Internal, Allocate items in the vlayer, this will increase the property values of the vlayer such as production and capacity
 -- Does not increment item storage, so should not be called before insert_item unless during init
 -- Does not validate area requirements, so checks must be performed before calling this function
 -- Accepts negative count for deallocating items
+-- @tparam string item_name The name of the item to allocate
+-- @tparam number count The count of the item to allocate
 function vlayer.allocate_item(item_name, count)
     local item_properties = config.allowed_items[item_name]
     assert(item_properties, 'Item not allowed in vlayer: ' .. tostring(item_name))
@@ -175,6 +195,8 @@ for item_name, properties in pairs(config.allowed_items) do
 end
 
 --- Insert an item into the vlayer, this will increment its count in storage and allocate it if possible
+-- @tparam string item_name The name of the item to insert
+-- @tparam number count The count of the item to insert
 function vlayer.insert_item(item_name, count)
     local item_properties = config.allowed_items[item_name]
     assert(item_properties, 'Item not allowed in vlayer: ' .. tostring(item_name))
@@ -198,6 +220,9 @@ end
 
 --- Remove an item from the vlayer, this will decrement its count in storage and prioritise unallocated items over deallocation
 -- Can not always fulfil the remove request for items which provide surface area, therefore returns the amount actually removed
+-- @tparam string item_name The name of the item to remove
+-- @tparam number count The count of the item to remove
+-- @treturn number The count of the item actually removed
 function vlayer.remove_item(item_name, count)
     local item_properties = config.allowed_items[item_name]
     assert(item_properties, 'Item not allowed in vlayer: ' .. tostring(item_name))
@@ -236,12 +261,17 @@ function vlayer.remove_item(item_name, count)
     -- Remove the item from allocated storage
     vlayer_data.storage.items[item_name] = vlayer_data.storage.items[item_name] - remove_count
     vlayer.allocate_item(item_name, -remove_count)
+
     return remove_unallocated + remove_count
 end
 
 --- Create a new storage input interface
-function vlayer.create_input_interface(surface, pos, last_user)
-    local interface = surface.create_entity{name='logistic-chest-storage', position=pos, force='neutral'}
+-- @tparam LuaSurface surface The surface to place the interface onto
+-- @tparam MapPosition position The position on the surface to place the interface at
+-- @tparam[opt] LuaPlayer player The player to show as the last user of the interface
+-- @treturn LuaEntity The entity that was created for the interface
+function vlayer.create_input_interface(surface, position, last_user)
+    local interface = surface.create_entity{name='logistic-chest-storage', position=position, force='neutral'}
     table.insert(vlayer_data.entity_interfaces.storage_input, interface)
 
     if last_user then
@@ -251,6 +281,8 @@ function vlayer.create_input_interface(surface, pos, last_user)
     interface.destructible = false
     interface.minable = false
     interface.operable = true
+
+    return interface
 end
 
 --- Handle all input interfaces, will take their contents and insert it into the vlayer storage
@@ -271,6 +303,7 @@ local function handle_input_interfaces()
                         else
                             vlayer.insert_item(name, count)
                         end
+
                     else
                         vlayer.insert_item(name, count)
                     end
@@ -283,8 +316,12 @@ local function handle_input_interfaces()
 end
 
 --- Create a new storage output interface
-function vlayer.create_output_interface(surface, pos, last_user)
-    local interface = surface.create_entity{name='logistic-chest-requester', position=pos, force='neutral'}
+-- @tparam LuaSurface surface The surface to place the interface onto
+-- @tparam MapPosition position The position on the surface to place the interface at
+-- @tparam[opt] LuaPlayer player The player to show as the last user of the interface
+-- @treturn LuaEntity The entity that was created for the interface
+function vlayer.create_output_interface(surface, position, last_user)
+    local interface = surface.create_entity{name='logistic-chest-requester', position=position, force='neutral'}
     table.insert(vlayer_data.entity_interfaces.storage_output, interface)
 
     if last_user then
@@ -294,6 +331,7 @@ function vlayer.create_output_interface(surface, pos, last_user)
     interface.destructible = false
     interface.minable = false
     interface.operable = true
+    return interface
 end
 
 --- Handle all output interfaces, will take their requests and remove it from the vlayer storage
@@ -366,7 +404,7 @@ function vlayer.get_statistics()
         energy_capacity = vlayer_data.properties.capacity * mega,
         energy_storage = vlayer_data.storage.energy,
         day = math.floor(game.tick / vlayer_data.surface.ticks_per_day),
-        time = game.tick % vlayer_data.surface.ticks_per_day,
+        time =math.floor(vlayer_data.surface.daytime * vlayer_data.surface.ticks_per_day)
     }
 end
 
@@ -382,8 +420,13 @@ local circuit_signals = {
     time = 'signal-T',
 }
 
-function vlayer.create_circuit_interface(surface, pos, last_user)
-    local interface = surface.create_entity{name='constant-combinator', position=pos, force='neutral'}
+--- Create a new circuit interface
+-- @tparam LuaSurface surface The surface to place the interface onto
+-- @tparam MapPosition position The position on the surface to place the interface at
+-- @tparam[opt] LuaPlayer player The player to show as the last user of the interface
+-- @treturn LuaEntity The entity that was created for the interface
+function vlayer.create_circuit_interface(surface, position, last_user)
+    local interface = surface.create_entity{name='constant-combinator', position=position, force='neutral'}
     table.insert(vlayer_data.entity_interfaces.circuit, interface)
 
     if last_user then
@@ -393,6 +436,7 @@ function vlayer.create_circuit_interface(surface, pos, last_user)
     interface.destructible = false
     interface.minable = false
     interface.operable = true
+    return interface
 end
 
 --- Handle all circuit interfaces, updating their signals to match the vlayer statistics
@@ -443,12 +487,16 @@ local function handle_circuit_interfaces()
 end
 
 --- Create a new energy interface
-function vlayer.create_energy_interface(surface, pos, last_user)
-    if not surface.can_place_entity{name='electric-energy-interface', position=pos} then
-        return false
+-- @tparam LuaSurface surface The surface to place the interface onto
+-- @tparam MapPosition position The position on the surface to place the interface at
+-- @tparam[opt] LuaPlayer player The player to show as the last user of the interface
+-- @treturn LuaEntity The entity that was created for the interface, or nil if it could not be created
+function vlayer.create_energy_interface(surface, position, last_user)
+    if not surface.can_place_entity{name='electric-energy-interface', position=position} then
+        return nil
     end
 
-    local interface = surface.create_entity{name='electric-energy-interface', position=pos, force='neutral'}
+    local interface = surface.create_entity{name='electric-energy-interface', position=position, force='neutral'}
     table.insert(vlayer_data.entity_interfaces.energy, interface)
 
     if last_user then
@@ -462,8 +510,7 @@ function vlayer.create_energy_interface(surface, pos, last_user)
     interface.power_production = 0
     interface.power_usage = 0
     interface.energy = 0
-
-    return true
+    return interface
 end
 
 --- Handle all energy interfaces as well as the energy storage
@@ -504,6 +551,11 @@ local function handle_energy_interfaces()
 end
 
 --- Remove the closest entity interface to the given position
+-- @tparam LuaSurface surface The surface to search for an interface on
+-- @tparam MapPosition position The position to start the search from
+-- @tparam number radius The radius to search for an interface within
+-- @treturn string The type of interface that was removed, or nil if no interface was found
+-- @treturn MapPosition The position the interface was at, or nil if no interface was found
 function vlayer.remove_closest_interface(surface, position, radius)
     local entities = surface.find_entities_filtered{
         name = {'logistic-chest-storage', 'logistic-chest-requester', 'constant-combinator', 'electric-energy-interface'},
