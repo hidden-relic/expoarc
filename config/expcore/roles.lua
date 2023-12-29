@@ -55,7 +55,7 @@ Roles.new_role('Administrator','Admin')
     'command/toggle-cheat-mode',
     'command/research-all',
     'command/connect-all',
-	  'command/collectdata'
+	'command/collectdata'
 }
 
 Roles.new_role('Senior Moderator','SMod')
