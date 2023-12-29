@@ -46,7 +46,6 @@ return {
     'modules.commands.waterfill',
     'modules.commands.artillery',
     'modules.commands.surface-clearing',
-    'modules.commands.artillery',
 
     --- Addons
     'modules.addons.chat-popups',
@@ -95,8 +94,8 @@ return {
     'modules.gui.vlayer',
     'modules.gui.research',
     'modules.gui.module',
-    'modules.gui.surveillance',
     'modules.gui.playerdata',
+    'modules.gui.surveillance',
     -- 'modules.gui.linked',
 		'modules.graftorio.require', -- graftorio
 

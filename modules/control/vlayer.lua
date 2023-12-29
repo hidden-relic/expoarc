@@ -261,7 +261,6 @@ function vlayer.remove_item(item_name, count)
     -- Remove the item from allocated storage
     vlayer_data.storage.items[item_name] = vlayer_data.storage.items[item_name] - remove_count
     vlayer.allocate_item(item_name, -remove_count)
-
     return remove_unallocated + remove_count
 end
 
@@ -281,7 +280,6 @@ function vlayer.create_input_interface(surface, position, last_user)
     interface.destructible = false
     interface.minable = false
     interface.operable = true
-
     return interface
 end
 
@@ -473,6 +471,14 @@ local function handle_circuit_interfaces()
                         return -- No more signals can be added
                     end
                 end
+            end
+
+            -- Clear remaining signals to prevent outdated values being present (caused by count > 0 check)
+            for clear_index = signal_index, max_signals do
+                if not circuit_oc.get_signal(clear_index).signal then
+                    break -- There are no more signals to clear
+                end
+                circuit_oc.set_signal(clear_index, nil)
             end
 
             -- Clear remaining signals to prevent outdated values being present (caused by count > 0 check)
