@@ -185,7 +185,7 @@ return {
             {
                 enabled = false,
                 name = 'iron-ore',
-                amount = 4000,
+                amount = 1,
                 size = {26, 27},
                 offset = {-64,-32}
                 -- offset = {-64,-64}

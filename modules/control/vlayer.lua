@@ -148,6 +148,7 @@ local function get_sustained_multiplier()
     local day_duration = 1 - surface.dawn + surface.dusk
     local sunset_duration = surface.evening - surface.dusk
     local sunrise_duration = surface.dawn - surface.morning
+
     return mul * (day_duration + (0.5 * (sunset_duration + sunrise_duration)))
 end
 
@@ -300,6 +301,7 @@ local function handle_input_interfaces()
                         else
                             vlayer.insert_item(name, count)
                         end
+
                     else
                         vlayer.insert_item(name, count)
                     end
@@ -469,6 +471,14 @@ local function handle_circuit_interfaces()
                         return -- No more signals can be added
                     end
                 end
+            end
+
+            -- Clear remaining signals to prevent outdated values being present (caused by count > 0 check)
+            for clear_index = signal_index, max_signals do
+                if not circuit_oc.get_signal(clear_index).signal then
+                    break -- There are no more signals to clear
+                end
+                circuit_oc.set_signal(clear_index, nil)
             end
 
             -- Clear remaining signals to prevent outdated values being present (caused by count > 0 check)
