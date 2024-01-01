@@ -121,18 +121,26 @@ Gui.element(function(definition, parent)
 
 	for j=1, 8 do
 		local res_j = res_n + j - 3
+
 		if res[res_j] ~= nil then
 			local res_r = res[res_j]
 			scroll_table['research_display_n_' .. j].caption = res_r.name
 
-			if research.time[res_j] < res[res_j].prev then
-				scroll_table['research_display_d_' .. j].caption = '-' .. format_time(res[res_j].prev - research.time[res_j], research_time_format)
+			if res[res_j].prev == 0 then
+				scroll_table['research_display_d_' .. j].caption = '-'
+
 			else
-				scroll_table['research_display_d_' .. j].caption = format_time(research.time[res_j] - res[res_j].prev, research_time_format)
+				if research.time[res_j] < res[res_j].prev then
+					scroll_table['research_display_d_' .. j].caption = '-' .. format_time(res[res_j].prev - research.time[res_j], research_time_format)
+	
+				else
+					scroll_table['research_display_d_' .. j].caption = format_time(research.time[res_j] - res[res_j].prev, research_time_format)
+				end
 			end
 
 			scroll_table['research_display_p_' .. j].caption = res_r.prev_disp
 			scroll_table['research_display_t_' .. j].caption = format_time(research.time[res_j], research_time_format)
+
 		else
 			scroll_table['research_display_n_' .. j].caption = ''
 			scroll_table['research_display_d_' .. j].caption = ''
