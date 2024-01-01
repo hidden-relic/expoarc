@@ -161,6 +161,7 @@ end)
 Event.add(defines.events.on_research_finished, function(event)
 	if event.research.name == nil then
 		return
+
 	elseif res_i[event.research.name] == nil then
 		return
 	end
@@ -178,14 +179,22 @@ Event.add(defines.events.on_research_finished, function(event)
 		if res[res_j] ~= nil then
 			local res_r = res[res_j]
 			res_disp[j]['n'] = res_r.name
-			if research.time[res_j] < res[res_j].prev then
-				res_disp[j]['d'] = '-' .. format_time(res[res_j].prev - research.time[res_j], research_time_format)
+
+			if res[res_j].prev == 0 then
+				res_disp[j]['d'] = '-'
+
 			else
-				res_disp[j]['d'] = format_time(research.time[res_j] - res[res_j].prev, research_time_format)
+				if research.time[res_j] < res[res_j].prev then
+					res_disp[j]['d'] = '-' .. format_time(res[res_j].prev - research.time[res_j], research_time_format)
+	
+				else
+					res_disp[j]['d'] = format_time(research.time[res_j] - res[res_j].prev, research_time_format)
+				end
 			end
 
 			res_disp[j]['p'] = res_r.prev_disp
 			res_disp[j]['t'] = format_time(research.time[res_j], research_time_format)
+
 		else
 			res_disp[j]['n'] = ''
 			res_disp[j]['d'] = ''
