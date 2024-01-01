@@ -126,7 +126,7 @@ Gui.element(function(definition, parent)
 			local res_r = res[res_j]
 			scroll_table['research_display_n_' .. j].caption = res_r.name
 
-			if res[res_j].prev == 0 then
+			if res[res_j].prev then
 				scroll_table['research_display_d_' .. j].caption = '-'
 
 			else
@@ -180,7 +180,7 @@ Event.add(defines.events.on_research_finished, function(event)
 			local res_r = res[res_j]
 			res_disp[j]['n'] = res_r.name
 
-			if res[res_j].prev == 0 then
+			if res[res_j].prev then
 				res_disp[j]['d'] = '-'
 
 			else
