@@ -892,8 +892,8 @@ return {
             upgrade_of = 'explosive-rocket',
             type = 'rocket',
             stack = 10,
-            min = 50,
-            max = 50
+            min = 0,
+            max = 0
         },
         ['rocket-launcher'] = {
             key = 104,
