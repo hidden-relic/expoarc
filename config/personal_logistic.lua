@@ -161,7 +161,7 @@ return {
             type = 'furnace',
             stack = 50,
             min = 0,
-            max = 50
+            max = 0
         },
         ['steel-furnace'] = {
             key = 19,
@@ -169,7 +169,7 @@ return {
             type = 'furnace',
             stack = 50,
             min = 0,
-            max = 50
+            max = 0
         },
         ['electric-furnace'] = {
             key = 20,
@@ -185,7 +185,7 @@ return {
             upgrade_of = nil,
             type = 'machine',
             stack = 50,
-            min = 50,
+            min = 0,
             max = 50
         },
         ['assembling-machine-2'] = {
@@ -209,16 +209,16 @@ return {
             upgrade_of = nil,
             type = 'machine',
             stack = 10,
-            min = 10,
-            max = 10
+            min = 0,
+            max = 0
         },
         ['chemical-plant'] = {
             key = 25,
             upgrade_of = nil,
             type = 'machine',
             stack = 10,
-            min = 10,
-            max = 10
+            min = 0,
+            max = 0
         },
         ['centrifuge'] = {
             key = 26,
@@ -282,8 +282,8 @@ return {
             upgrade_of = nil,
             type = 'pole',
             stack = 50,
-            min = 100,
-            max = 100
+            min = 150,
+            max = 150
         },
         ['medium-electric-pole'] = {
             key = 32,
@@ -453,7 +453,7 @@ return {
             upgrade_of = 'burner-inserter',
             type = 'inserter',
             stack = 50,
-            min = 50,
+            min = 0,
             max = 50
         },
         ['long-handed-inserter'] = {
@@ -461,16 +461,16 @@ return {
             upgrade_of = nil,
             type = 'inserter',
             stack = 50,
-            min = 50,
-            max = 50
+            min = 0,
+            max = 0
         },
         ['fast-inserter'] = {
             key = 44,
             upgrade_of = 'inserter',
             type = 'inserter',
             stack = 50,
-            min = 100,
-            max = 100
+            min = 0,
+            max = 50
         },
         ['filter-inserter'] = {
             key = 45,
@@ -518,8 +518,8 @@ return {
             upgrade_of = nil,
             type = nil,
             stack = 50,
-            min = 50,
-            max = 50
+            min = 100,
+            max = 100
         },
         ['storage-tank'] = {
             key = 59,
@@ -721,8 +721,8 @@ return {
             upgrade_of = nil,
             type = nil,
             stack = 50,
-            min = 10,
-            max = 10
+            min = 0,
+            max = 0
         },
         ['programmable-speaker'] = {
             key = 79,
@@ -746,16 +746,16 @@ return {
             upgrade_of = nil,
             type = 'module',
             stack = 10,
-            min = 80,
-            max = 80
+            min = 120,
+            max = 120
         },
         ['speed-module'] = {
             key = 82,
             upgrade_of = nil,
             type = 'module',
             stack = 50,
-            min = 250,
-            max = 250
+            min = 500,
+            max = 500
         },
         ['speed-module-2'] = {
             key = 83,
@@ -770,8 +770,8 @@ return {
             upgrade_of = 'speed-module-2',
             type = 'module',
             stack = 50,
-            min = 250,
-            max = 250
+            min = 500,
+            max = 500
         },
         ['productivity-module'] = {
             key = 85,
@@ -1184,7 +1184,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['fusion-reactor-equipment'] = {
             key = 137,
@@ -1192,7 +1192,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['belt-immunity-equipment'] = {
             key = 138,
@@ -1200,7 +1200,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['night-vision-equipment'] = {
             key = 139,
@@ -1208,7 +1208,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['personal-laser-defense-equipment'] = {
             key = 140,
@@ -1216,7 +1216,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 20
         },
         ['personal-roboport-equipment'] = {
             key = 141,
@@ -1232,7 +1232,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['energy-shield-equipment'] = {
             key = 143,
@@ -1248,7 +1248,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['battery-equipment'] = {
             key = 145,
@@ -1264,7 +1264,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['exoskeleton-equipment'] = {
             key = 147,
@@ -1272,7 +1272,7 @@ return {
             type = 'armor_equipment',
             stack = 20,
             min = 0,
-            max = 0
+            max = 5
         },
         ['discharge-defense-equipment'] = {
             key = 148,
