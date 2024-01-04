@@ -689,8 +689,8 @@ return {
             upgrade_of = nil,
             type = nil,
             stack = 50,
-            min = 100,
-            max = 100
+            min = 50,
+            max = 50
         },
         ['red-wire'] = {
             key = 75,
