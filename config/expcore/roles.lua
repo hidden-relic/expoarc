@@ -59,7 +59,7 @@ Roles.new_role('Administrator','Admin')
 }
 
 Roles.new_role('Senior Moderator','SMod')
-:set_permission_group('Admin')
+:set_permission_group('Mod')
 :set_custom_color{r=0,g=170,b=0}
 :set_flag('is_admin')
 :set_flag('is_spectator')
@@ -75,7 +75,7 @@ Roles.new_role('Senior Moderator','SMod')
 }
 
 Roles.new_role('Moderator','Mod')
-:set_permission_group('Admin')
+:set_permission_group('Mod')
 :set_custom_color{r=0,g=170,b=0}
 :set_flag('is_admin')
 :set_flag('is_spectator')
@@ -100,7 +100,7 @@ Roles.new_role('Moderator','Mod')
 }
 
 Roles.new_role('Trainee','TrMod')
-:set_permission_group('Admin')
+:set_permission_group('Mod')
 :set_custom_color{r=0,g=170,b=0}
 :set_flag('is_admin')
 :set_flag('is_spectator')
