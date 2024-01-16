@@ -86,7 +86,7 @@ end)
 --- Set of elements that are used to make up a row of the player table
 -- @element add_player_base
 local add_player_base =
-Gui.element(function(definition, parent, player_data)
+Gui.element(function(_, parent, player_data)
     -- Add the button to open the action bar
     local toggle_action_bar_flow = parent.add{ type = 'flow', name = player_data.name }
     open_action_bar(toggle_action_bar_flow)
@@ -112,7 +112,7 @@ Gui.element(function(definition, parent, player_data)
     }
     time_label.style.padding = 0
 
-    return time_label
+    return player_name
 end)
 :on_click(function(player, element, event)
     local selected_player_name = element.caption
