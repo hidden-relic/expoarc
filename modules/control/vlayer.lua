@@ -402,7 +402,7 @@ function vlayer.get_statistics()
         energy_capacity = vlayer_data.properties.capacity * mega,
         energy_storage = vlayer_data.storage.energy,
         day = math.floor(game.tick / vlayer_data.surface.ticks_per_day),
-        time =math.floor(vlayer_data.surface.daytime * vlayer_data.surface.ticks_per_day)
+        time = math.floor(vlayer_data.surface.daytime * vlayer_data.surface.ticks_per_day)
     }
 end
 
@@ -478,6 +478,7 @@ local function handle_circuit_interfaces()
                 if not circuit_oc.get_signal(clear_index).signal then
                     break -- There are no more signals to clear
                 end
+
                 circuit_oc.set_signal(clear_index, nil)
             end
 
@@ -486,6 +487,7 @@ local function handle_circuit_interfaces()
                 if not circuit_oc.get_signal(clear_index).signal then
                     break -- There are no more signals to clear
                 end
+
                 circuit_oc.set_signal(clear_index, nil)
             end
         end
