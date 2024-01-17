@@ -101,7 +101,7 @@ local function miner_check(entity)
 
     else
         entity.order_deconstruction(entity.force)
-    end 
+    end
 end
 
 Event.add(defines.events.on_resource_depleted, function(event)
