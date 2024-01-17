@@ -56,22 +56,20 @@ local function chest_check(entity)
         return
     end
 
-    local chest_in_use = false
     local radius = 1 + entity.prototype.mining_drill_radius
     local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'inserter'}}
 
     for _, e in pairs(entities) do
         if drop_target(e) == target then
             if not e.to_be_deconstructed(entity.force) then
-                chest_in_use = true
-                return
+                if e ~= target then
+                    return
+                end
             end
         end
     end
 
-    if not chest_in_use then
-        table.insert(miner_data.queue, {t=game.tick + 10, e=target})
-    end
+    table.insert(miner_data.queue, {t=game.tick + 10, e=target})
 end
 
 local function miner_check(entity)
