@@ -1,5 +1,6 @@
 local Event = require 'utils.event_core' --- @dep utils.event_core
 local Global = require 'utils.global' --- @dep utils.global
+local config = require 'config.miner' --- @dep config.miner
 
 local miner_data = {}
 
@@ -21,7 +22,7 @@ local function chest_check(entity)
                     if e.drop_target == entity.drop_target then
                         if not e.to_be_deconstructed(entity.force) then
                             chest_in_use = true
-                            break
+                            return
                         end
                     end
                 end
@@ -76,11 +77,28 @@ local function miner_check(entity)
     end
 
     if entity.fluidbox and #entity.fluidbox > 0 then
+        if not config.fluid then
+            table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
+
+            if config.chest then
+                chest_check(entity)
+            end
+
+            return
+        end
+
         -- if require fluid to mine
         local pipe_build = {{x=0, y=0}}
         local half = math.floor(entity.get_radius())
         local radius = 1 + entity.prototype.mining_drill_radius
-        local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type='mining-drill'}
+
+        local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'pipe', 'pipe-to-ground'}}
+        local entities_t = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, ghost_type={'pipe', 'pipe-to-ground'}}
+        local c = #entities
+
+        for k,v in pairs(entities_t) do
+            entities[c + k] = v
+        end
 
         for _, e in pairs(entities) do
             if (e.position.x > entity.position.x) and (e.position.y == entity.position.y) then
@@ -111,11 +129,16 @@ local function miner_check(entity)
             entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pipe_build[p].x, y=entity.position.y + pipe_build[p].y}, force=entity.force, inner_name='pipe', raise_built=true}
         end
 
-        chest_check(entity)
+        if config.chest then
+            chest_check(entity)
+        end
 
     else
         table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
-        chest_check(entity)
+
+        if config.chest then
+            chest_check(entity)
+        end
     end
 end
 
