@@ -10,42 +10,67 @@ end)
 
 miner_data.queue = {}
 
-local function chest_check(entity)
-    local target
-
+local function drop_target(entity)
     if entity.drop_target then
-        target = entity.drop_target
+        return entity.drop_target
 
     else
         local entities = entity.surface.find_entities_filtered{position=entity.drop_position}
 
         if #entities > 0 then
-            target = entities[1]
+            return entities[1]
+        end
+    end
+end
 
-        else
-            return
+local function chest_check(entity)
+    local target = drop_target(entity)
+
+    if entity.to_be_deconstructed(entity.force) then
+        -- if it is already waiting to be deconstruct
+        return
+    end
+
+    if next(entity.circuit_connected_entities.red) ~= nil or next(entity.circuit_connected_entities.green) ~= nil then
+        -- connected to circuit network
+        return
+    end
+
+    if not entity.minable then
+        -- if it is minable
+        return
+    end
+
+    if not entity.prototype.selectable_in_game then
+        -- if it can select
+        return
+    end
+
+    if entity.has_flag('not-deconstructable') then
+        -- if it can deconstruct
+        return
+    end
+
+    if target.type ~= 'logistic-container' and target.type ~= 'container' then
+        -- not a chest
+        return
+    end
+
+    local chest_in_use = false
+    local radius = 1 + entity.prototype.mining_drill_radius
+    local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'inserter'}}
+
+    for _, e in pairs(entities) do
+        if drop_target(e) == target then
+            if not e.to_be_deconstructed(entity.force) then
+                chest_in_use = true
+                return
+            end
         end
     end
 
-    if target.minable and target.prototype.selectable_in_game then
-        if target.type == 'logistic-container' or target.type == 'container' then
-            local chest_in_use = false
-            local radius = 1 + entity.prototype.mining_drill_radius
-            local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'inserter'}}
-
-            for _, e in pairs(entities) do
-                if e.drop_target == target then
-                    if not e.to_be_deconstructed(entity.force) then
-                        chest_in_use = true
-                        return
-                    end
-                end
-            end
-
-            if not chest_in_use then
-                table.insert(miner_data.queue, {t=game.tick + 10, e=target})
-            end
-        end
+    if not chest_in_use then
+        table.insert(miner_data.queue, {t=game.tick + 10, e=target})
     end
 end
 
