@@ -11,25 +11,39 @@ end)
 miner_data.queue = {}
 
 local function chest_check(entity)
-    if entity.drop_target then
-        if entity.drop_target.minable and entity.drop_target.prototype.selectable_in_game then
-            if entity.drop_target.type == 'logistic-container' or entity.drop_target.type == 'container' then
-                local chest_in_use = false
-                local radius = 1 + entity.prototype.mining_drill_radius
-                local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'inserter'}}
+    local target
 
-                for _, e in pairs(entities) do
-                    if e.drop_target == entity.drop_target then
-                        if not e.to_be_deconstructed(entity.force) then
-                            chest_in_use = true
-                            return
-                        end
+    if entity.drop_target then
+        target = entity.drop_target
+
+    else
+        local entities = entity.surface.find_entities_filtered{position=entity.drop_position}
+
+        if #entities > 0 then
+            target = entities[1]
+
+        else
+            return
+        end
+    end
+
+    if target.minable and target.prototype.selectable_in_game then
+        if target.type == 'logistic-container' or target.type == 'container' then
+            local chest_in_use = false
+            local radius = 1 + entity.prototype.mining_drill_radius
+            local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'inserter'}}
+
+            for _, e in pairs(entities) do
+                if e.drop_target == target then
+                    if not e.to_be_deconstructed(entity.force) then
+                        chest_in_use = true
+                        return
                     end
                 end
+            end
 
-                if not chest_in_use then
-                    table.insert(miner_data.queue, {t=game.tick + 10, e=entity.drop_target})
-                end
+            if not chest_in_use then
+                table.insert(miner_data.queue, {t=game.tick + 10, e=target})
             end
         end
     end
@@ -77,6 +91,7 @@ local function miner_check(entity)
     end
 
     if entity.fluidbox and #entity.fluidbox > 0 then
+        -- if require fluid to mine
         if not config.fluid then
             table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
 
@@ -87,7 +102,6 @@ local function miner_check(entity)
             return
         end
 
-        -- if require fluid to mine
         local pipe_build = {{x=0, y=0}}
         local half = math.floor(entity.get_radius())
         local radius = 1 + entity.prototype.mining_drill_radius
