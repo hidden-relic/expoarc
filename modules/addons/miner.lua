@@ -93,12 +93,15 @@ local function miner_check(entity)
             end
         end
 
+        entity.order_deconstruction(entity.force)
+
         for p=1, #pipe_build do
             entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pipe_build[p].x, y=entity.position.y + pipe_build[p].y}, force=entity.force, inner_name='pipe', raise_built=true}
         end
-    end
 
-    entity.order_deconstruction(entity.force)
+    else
+        entity.order_deconstruction(entity.force)
+    end 
 end
 
 Event.add(defines.events.on_resource_depleted, function(event)
