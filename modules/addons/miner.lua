@@ -61,10 +61,8 @@ local function chest_check(entity)
 
     for _, e in pairs(entities) do
         if drop_target(e) == target then
-            if not e.to_be_deconstructed(entity.force) then
-                if e ~= target then
-                    return
-                end
+            if not e.to_be_deconstructed(entity.force) and e ~= entity then
+                return
             end
         end
     end
