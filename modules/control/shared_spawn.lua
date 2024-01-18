@@ -41,6 +41,12 @@ function shared_spawn.base_create(player, location)
         end
     end
 
+    for x=math.floor(config.deconstruction_radius / 2) - 4, math.floor(config.deconstruction_radius / 2) + 4 do
+        for y=config.base_radius, config.deconstruction_radius do
+            table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x+x, y=location.y+y}})
+        end
+    end
+
     -- Remove entities then set the tiles
     local entities_to_remove = player.surface.find_entities_filtered{position=location, radius=config.deconstruction_radius, name='character', invert=true}
 
@@ -78,12 +84,12 @@ function shared_spawn.base_create(player, location)
         end
     end
 
-    player.teleport{position=location}
+    
 end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
 :register(function(player)
-    shared_spawn.base_create(player, {-176, -176})
+    shared_spawn.base_create(player, {x=-176, y=-176})
 end)
 
 return shared_spawn
