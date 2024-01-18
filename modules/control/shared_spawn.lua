@@ -19,14 +19,13 @@ Global.register(shared_spawn_data, function(tbl)
 end)
 
 function shared_spawn.base_create(player, location)
-    if shared_spawn_data.base[player.name] then
-        return
+    for _, v in pairs(shared_spawn_data.shared_base) do
+        if v.player[player.name] then
+            return
+        end
     end
 
-    shared_spawn_data.base[player.name] = {
-        location = location,
-        player = {player.name}
-    }
+    table.insert(shared_spawn_data.base, {location = location, player = {player.name}})
 
     local tiles_to_make = {}
 
@@ -88,13 +87,39 @@ function shared_spawn.base_create(player, location)
         end
     end
 
-    player.force.chart(player.surface, {{x=location.x - config.deconstruction_radius, y=location.y - config.deconstruction_radius}, {x=location.x + config.deconstruction_radius, y=location.y + config.deconstruction_radius}})
+    player.force.chart(player.surface, {{x=location.x - config.deconstruction_radius - 64, y=location.y - config.deconstruction_radius - 64}, {x=location.x + config.deconstruction_radius + 64, y=location.y + config.deconstruction_radius + 64}})
     player.teleport(location)
 end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
 :register(function(player)
-    shared_spawn.base_create(player, {x=-144, y=-144})
+    if #shared_spawn_data.shared_base == 0 then
+        shared_spawn.base_create(player, {x=-480, y=-480})
+
+    else
+        local pos_x
+        local pos_y
+        local x_pos = {32, -32, 32, -32}
+        local y_pos = {32, 32, -32, -32}
+
+        for _, v in pairs(shared_spawn_data.shared_base) do
+            local base = shared_spawn_data.shared_base[math.floor(math.random(1, #shared_spawn_data.shared_base))]
+
+            for _, v2 in pairs(shared_spawn_data.shared_base) do
+                for i=1, 4 do
+                    pos_x = math.ceil((base.location.x + math.random(15, 20) * x_pos[i]) / 32) * 32
+                    pos_y = math.ceil((base.location.y + math.random(15, 20) * y_pos[i]) / 32) * 32
+
+                    if (v2.location.x < base.location.x) and (pos_x < v2.location.x) then
+                        if (v2.location.y < base.location.y) and (pos_y < v2.location.y) then
+                            shared_spawn.base_create(player, {x=pos_x, y=pos_y})
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end
 end)
 
 return shared_spawn
