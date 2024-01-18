@@ -83,7 +83,7 @@ end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
 :register(function(player)
-    shared_spawn.base_create(player, player.location)
+    shared_spawn.base_create(player, {-176, -176})
 end)
 
 return shared_spawn

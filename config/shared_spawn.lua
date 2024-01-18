@@ -2,8 +2,8 @@
 -- @config shared spawn
 
 return {
-    deconstruction_radius = 160,
-    base_radius = 128,
+    deconstruction_radius = 128,
+    base_radius = 112,
     deconstruction_tile = 'water',
     base_tile = 'landfill',
     resource_tiles = {
