@@ -85,6 +85,7 @@ function shared_spawn.base_create(player, location)
     end
 
     player.force.chart(player.surface, {{x=location.x - config.deconstruction_radius, y=location.y - config.deconstruction_radius}, {x=location.x + config.deconstruction_radius, y=location.y + config.deconstruction_radius}})
+    player.teleport(location)
 end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
