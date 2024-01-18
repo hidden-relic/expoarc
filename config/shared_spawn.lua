@@ -29,7 +29,7 @@ return {
                 enabled = true,
                 name = 'stone',
                 amount = 5000,
-                size = {22, 20},
+                size = {26, 27},
                 offset = {-64, 32}
                 -- offset = {-64, 64}
             },
@@ -37,7 +37,7 @@ return {
                 enabled = true,
                 name = 'coal',
                 amount = 5000,
-                size = {22, 20},
+                size = {26, 27},
                 offset = {-64, -64}
                 -- offset = {64, 64}
             },
@@ -45,7 +45,7 @@ return {
                 enabled = false,
                 name = 'uranium-ore',
                 amount = 5000,
-                size = {22, 20},
+                size = {26, 27},
                 offset = {-64, -96}
                 -- offset = {0, 64}
             }
