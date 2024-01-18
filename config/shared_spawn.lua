@@ -54,7 +54,7 @@ return {
                 name = 'crude-oil',
                 num_patches = 4,
                 amount = 5000000,
-                offset = {-64, -12},
+                offset = {-56, -12},
                 offset_next = {0, 6}
             }
         }
