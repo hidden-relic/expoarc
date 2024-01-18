@@ -20,7 +20,7 @@ end)
 
 function shared_spawn.base_create(player, location)
     if shared_spawn_data.base[player.name] then
-        return
+        return Commands.error
     end
 
     shared_spawn_data.base[player.name] = {
@@ -86,11 +86,13 @@ function shared_spawn.base_create(player, location)
 
     player.force.chart(player.surface, {{x=location.x - config.deconstruction_radius, y=location.y - config.deconstruction_radius}, {x=location.x + config.deconstruction_radius, y=location.y + config.deconstruction_radius}})
     player.teleport(location)
+
+    return Commands.success
 end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
 :register(function(player)
-    shared_spawn.base_create(player, {x=-144, y=-144})
+    return shared_spawn.base_create(player, {x=-144, y=-144})
 end)
 
 return shared_spawn
