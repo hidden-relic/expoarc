@@ -32,18 +32,18 @@ function shared_spawn.base_create(player, location)
 
     for x=-config.deconstruction_radius, config.deconstruction_radius do
         for y=-config.deconstruction_radius, config.deconstruction_radius do
-            if math.max(x, y) > config.base_radius then
-                table.insert(tiles_to_make, {name=config.deconstruction_tile, position={x=location.x+x, y=location.y+y}})
+            if math.max(math.abs(x), math.abs(y)) > config.base_radius then
+                table.insert(tiles_to_make, {name=config.deconstruction_tile, position={x=location.x + x, y=location.y + y}})
 
             else
-                table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x+x, y=location.y+y}})
+                table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x + x, y=location.y + y}})
             end
         end
     end
 
-    for x=math.floor(config.deconstruction_radius / 2) - 4, math.floor(config.deconstruction_radius / 2) + 4 do
+    for x=-4, 4 do
         for y=config.base_radius, config.deconstruction_radius do
-            table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x+x, y=location.y+y}})
+            table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x + x, y=location.y + y}})
         end
     end
 
@@ -84,7 +84,7 @@ function shared_spawn.base_create(player, location)
         end
     end
 
-    
+    player.force.chart(player.surface, {{x=location.x - config.deconstruction_radius, y=location.y - config.deconstruction_radius}, {x=location.x + config.deconstruction_radius, y=location.y + config.deconstruction_radius}})
 end
 
 Commands.new_command('create-base-individual-spawn', 'Create a individual spawn for the shared base')
