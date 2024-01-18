@@ -46,7 +46,7 @@ function shared_spawn.base_create(player, location)
             table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x + x, y=location.y + y}})
         end
 
-        for y=-config.base_radius, -config.deconstruction_radius do
+        for y=-config.deconstruction_radius, -config.base_radius do
             table.insert(tiles_to_make, {name=config.base_tile, position={x=location.x + x, y=location.y + y}})
         end
     end
