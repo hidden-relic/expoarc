@@ -185,7 +185,7 @@ return {
             {
                 enabled = false,
                 name = 'iron-ore',
-                amount = 1,
+                amount = 5000,
                 size = {26, 27},
                 offset = {-64,-32}
                 -- offset = {-64,-64}
@@ -193,7 +193,7 @@ return {
             {
                 enabled = false,
                 name = 'copper-ore',
-                amount = 4000,
+                amount = 5000,
                 size = {26, 27},
                 offset = {-64, 0}
                 -- offset = {64, -64}
@@ -201,7 +201,7 @@ return {
             {
                 enabled = false,
                 name = 'stone',
-                amount = 4000,
+                amount = 5000,
                 size = {22, 20},
                 offset = {-64, 32}
                 -- offset = {-64, 64}
@@ -209,7 +209,7 @@ return {
             {
                 enabled = false,
                 name = 'coal',
-                amount = 4000,
+                amount = 5000,
                 size = {22, 20},
                 offset = {-64, -64}
                 -- offset = {64, 64}
@@ -217,7 +217,7 @@ return {
             {
                 enabled = false,
                 name = 'uranium-ore',
-                amount = 4000,
+                amount = 5000,
                 size = {22, 20},
                 offset = {-64, -96}
                 -- offset = {0, 64}
@@ -231,7 +231,7 @@ return {
                 enabled = false,
                 name = 'crude-oil',
                 num_patches = 4,
-                amount = 4000000,
+                amount = 5000000,
                 offset = {-80, -12},
                 -- offset = {-12, 64},
                 offset_next = {0, 6}
