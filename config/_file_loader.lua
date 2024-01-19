@@ -70,7 +70,7 @@ return {
 
     -- Control
     'modules.control.vlayer',
-    'modules.control.shared_spawn',
+    -- 'modules.control.shared_spawn',
 
     --- Data
     'modules.data.statistics',
