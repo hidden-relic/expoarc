@@ -229,6 +229,7 @@ Roles.new_role('Member','Mem')
     'gui/vlayer-edit',
     'command/personal-logistic',
     'command/auto-research',
+    'command/set-trains-to-automatic',
     'command/lawnmower',
     'command/waterfill',
     'command/clear-item-on-ground',
@@ -241,7 +242,6 @@ Roles.new_role('Member','Mem')
     'command/home-set',
     'command/home-get',
     'command/return',
-    'command/set-trains-to-automatic',
     'fast-tree-decon'
     -- 'gui/linked'
 }
