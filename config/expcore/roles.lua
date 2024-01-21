@@ -242,6 +242,7 @@ Roles.new_role('Member','Mem')
     'command/home-set',
     'command/home-get',
     'command/return',
+    'command/set-trains-to-automatic',
     'fast-tree-decon'
     -- 'gui/linked'
 }
