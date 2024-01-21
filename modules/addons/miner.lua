@@ -86,9 +86,9 @@ local function miner_check(entity)
         end
     end
 
-    local pos = entity.position
+    local position = entity.position
     local radius = entity.prototype.mining_drill_radius
-    local resources = entity.surface.find_entities_filtered{area={{pos.x - radius, pos.y - radius}, {pos.x + radius, pos.y + radius}}, type='resource'}
+    local resources = entity.surface.find_entities_filtered{area={{position.x - radius, position.y - radius}, {position.x + radius, position.y + radius}}, type='resource'}
 
     for _, resource in pairs(resources) do
         if resource.amount > 0 then
@@ -100,66 +100,54 @@ local function miner_check(entity)
         return
     end
 
+    local pipe_build = {}
+
     if entity.fluidbox and #entity.fluidbox > 0 then
         -- if require fluid to mine
-        if not config.fluid then
-            table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
+        if config.fluid then
+            table.insert(pipe_build, {x=0, y=0})
 
-            if config.chest then
-                chest_check(entity)
-            end
+            local half = math.floor(entity.get_radius())
+            radius = 1 + entity.prototype.mining_drill_radius
 
-            return
-        end
+            local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'pipe', 'pipe-to-ground'}}
+            local entities_t = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, ghost_type={'pipe', 'pipe-to-ground'}}
 
-        local pipe_build = {{x=0, y=0}}
-        local half = math.floor(entity.get_radius())
-        local radius = 1 + entity.prototype.mining_drill_radius
+            table.array_insert(entities, entities_t)
 
-        local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'pipe', 'pipe-to-ground'}}
-        local entities_t = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, ghost_type={'pipe', 'pipe-to-ground'}}
+            for _, e in pairs(entities) do
+                if (e.position.x > entity.position.x) and (e.position.y == entity.position.y) then
+                    for h=1, half do
+                        table.insert(pipe_build, {x=h, y=0})
+                    end
 
-        table.array_insert(entities, entities_t)
+                elseif (e.position.x < entity.position.x) and (e.position.y == entity.position.y) then
+                    for h=1, half do
+                        table.insert(pipe_build, {x=-h, y=0})
+                    end
 
-        for _, e in pairs(entities) do
-            if (e.position.x > entity.position.x) and (e.position.y == entity.position.y) then
-                for h=1, half do
-                    table.insert(pipe_build, {x=h, y=0})
-                end
+                elseif (e.position.x == entity.position.x) and (e.position.y > entity.position.y) then
+                    for h=1, half do
+                        table.insert(pipe_build, {x=0, y=h})
+                    end
 
-            elseif (e.position.x < entity.position.x) and (e.position.y == entity.position.y) then
-                for h=1, half do
-                    table.insert(pipe_build, {x=-h, y=0})
-                end
-
-            elseif (e.position.x == entity.position.x) and (e.position.y > entity.position.y) then
-                for h=1, half do
-                    table.insert(pipe_build, {x=0, y=h})
-                end
-
-            elseif (e.position.x == entity.position.x) and (e.position.y < entity.position.y) then
-                for h=1, half do
-                    table.insert(pipe_build, {x=0, y=-h})
+                elseif (e.position.x == entity.position.x) and (e.position.y < entity.position.y) then
+                    for h=1, half do
+                        table.insert(pipe_build, {x=0, y=-h})
+                    end
                 end
             end
         end
+    end
 
-        table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
-        
-        for _, pos in ipairs(pipe_build) do
-            entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pos.x, y=entity.position.y + pos.y}, force=entity.force, inner_name='pipe', raise_built=true}
-        end
+    table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
 
-        if config.chest then
-            chest_check(entity)
-        end
+    if config.chest then
+        chest_check(entity)
+    end
 
-    else
-        table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
-
-        if config.chest then
-            chest_check(entity)
-        end
+    for _, pos in ipairs(pipe_build) do
+        entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pos.x, y=entity.position.y + pos.y}, force=entity.force, inner_name='pipe', raise_built=true}
     end
 end
 
