@@ -23,31 +23,39 @@ local function drop_target(entity)
     end
 end
 
-local function chest_check(entity)
-    local target = drop_target(entity)
-
+local function chest_entity(entity)
     if entity.to_be_deconstructed(entity.force) then
         -- if it is already waiting to be deconstruct
-        return
+        return true
     end
 
     if next(entity.circuit_connected_entities.red) ~= nil or next(entity.circuit_connected_entities.green) ~= nil then
         -- connected to circuit network
-        return
+        return true
     end
 
     if not entity.minable then
         -- if it is minable
-        return
+        return true
     end
 
     if not entity.prototype.selectable_in_game then
         -- if it can select
-        return
+        return true
     end
 
     if entity.has_flag('not-deconstructable') then
         -- if it can deconstruct
+        return true
+    end
+
+    return false
+end
+
+local function chest_check(entity)
+    local target = drop_target(entity)
+
+    if chest_entity(entity) then
         return
     end
 
@@ -78,7 +86,9 @@ local function miner_check(entity)
         end
     end
 
-    local resources = entity.surface.find_entities_filtered{area={{entity.position.x - entity.prototype.mining_drill_radius, entity.position.y - entity.prototype.mining_drill_radius}, {entity.position.x + entity.prototype.mining_drill_radius, entity.position.y + entity.prototype.mining_drill_radius}}, type='resource'}
+    local pos = entity.position
+    local radius = entity.prototype.mining_drill_radius
+    local resources = entity.surface.find_entities_filtered{area={{pos.x - radius, pos.y - radius}, {pos.x + radius, pos.y + radius}}, type='resource'}
 
     for _, resource in pairs(resources) do
         if resource.amount > 0 then
@@ -86,28 +96,7 @@ local function miner_check(entity)
         end
     end
 
-    if entity.to_be_deconstructed(entity.force) then
-        -- if it is already waiting to be deconstruct
-        return
-    end
-
-    if next(entity.circuit_connected_entities.red) ~= nil or next(entity.circuit_connected_entities.green) ~= nil then
-        -- connected to circuit network
-        return
-    end
-
-    if not entity.minable then
-        -- if it is minable
-        return
-    end
-
-    if not entity.prototype.selectable_in_game then
-        -- if it can select
-        return
-    end
-
-    if entity.has_flag('not-deconstructable') then
-        -- if it can deconstruct
+    if chest_entity(entity) then
         return
     end
 
@@ -129,11 +118,8 @@ local function miner_check(entity)
 
         local entities = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, type={'mining-drill', 'pipe', 'pipe-to-ground'}}
         local entities_t = entity.surface.find_entities_filtered{area={{entity.position.x - radius, entity.position.y - radius}, {entity.position.x + radius, entity.position.y + radius}}, ghost_type={'pipe', 'pipe-to-ground'}}
-        local c = #entities
 
-        for k,v in pairs(entities_t) do
-            entities[c + k] = v
-        end
+        table.array_insert(entities, entities_t)
 
         for _, e in pairs(entities) do
             if (e.position.x > entity.position.x) and (e.position.y == entity.position.y) then
@@ -159,9 +145,9 @@ local function miner_check(entity)
         end
 
         table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
-
-        for p=1, #pipe_build do
-            entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pipe_build[p].x, y=entity.position.y + pipe_build[p].y}, force=entity.force, inner_name='pipe', raise_built=true}
+        
+        for _, pos in ipairs(pipe_build) do
+            entity.surface.create_entity{name='entity-ghost', position={x=entity.position.x + pos.x, y=entity.position.y + pos.y}, force=entity.force, inner_name='pipe', raise_built=true}
         end
 
         if config.chest then
