@@ -52,9 +52,7 @@ local function chest_entity(entity)
     return false
 end
 
-local function chest_check(entity)
-    local target = drop_target(entity)
-
+local function chest_check(entity, target)
     if chest_entity(entity) then
         return
     end
@@ -141,7 +139,7 @@ local function miner_check(entity)
     table.insert(miner_data.queue, {t=game.tick + 5, e=entity})
 
     if config.chest then
-        chest_check(entity)
+        chest_check(entity, drop_target(entity))
     end
 
     for _, pos in ipairs(pipe_build) do
