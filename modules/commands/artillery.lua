@@ -65,7 +65,7 @@ Selection.on_selection(SelectionArtyArea, function(event)
             table.insert(hit, e.position)
             count = count + 1
 
-            if count > 600 then
+            if count > 400 then
                 break
             end
         end
