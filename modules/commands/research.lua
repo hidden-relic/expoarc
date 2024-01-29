@@ -49,7 +49,7 @@ local function research_notification(event)
             end
 
             if config.pollution_ageing_by_research then
-                game.map_settings.pollution.ageing = math.min(10, event.research.force.technologies['mining-productivity-4'].level / 5)
+                game.map_settings.pollution.ageing = math.min(10, (event.research.force.technologies['mining-productivity-4'].level - 1) / 5)
             end
         end
 
