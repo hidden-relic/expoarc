@@ -9,6 +9,7 @@ return {
         name = 'laboratory_productivity_bonus',
         rate = 1
     },
+    pollution_ageing_by_research = false,
     -- this enable 20 more inventory for each mining productivity level up to 4
     bonus_inventory = {
         enabled = true,
