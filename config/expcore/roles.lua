@@ -237,6 +237,7 @@ Roles.new_role('Member','Mem')
     'command/clear-blueprint',
     'command/artillery-target-remote',
     'gui/surveillance',
+    'gui/rate',
     'command/bonus',
     'command/bonus/2',
     'command/home',
