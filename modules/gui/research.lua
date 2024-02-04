@@ -54,7 +54,7 @@ for i=1, #config.milestone do
 	}
 end
 
-local clock_container =
+local research_container =
 Gui.element(function(definition, parent)
     local container = Gui.container(parent, definition.name, 200)
 	local scroll_table = Gui.scroll_table(container, 400, 4)
@@ -149,7 +149,7 @@ end)
 :static_name(Gui.unique_static_name)
 :add_to_left_flow()
 
-Gui.left_toolbar_button('item/space-science-pack', {'expcom-res.main-tooltip'}, clock_container, function(player)
+Gui.left_toolbar_button('item/space-science-pack', {'expcom-res.main-tooltip'}, research_container, function(player)
 	return Roles.player_allowed(player, 'gui/research')
 end)
 
@@ -193,7 +193,7 @@ Event.add(defines.events.on_research_finished, function(event)
 	end
 
 	for _, player in pairs(game.connected_players) do
-        local frame = Gui.get_left_element(player, clock_container)
+        local frame = Gui.get_left_element(player, research_container)
 
 		for j=1, 8 do
 			frame.container.scroll.table['research_display_n_' .. j].caption = res_disp[j]['n']
@@ -208,7 +208,7 @@ Event.on_nth_tick(60, function()
 	local current_time = format_time(game.tick, research_time_format)
 
 	for _, player in pairs(game.connected_players) do
-        local frame = Gui.get_left_element(player, clock_container)
+        local frame = Gui.get_left_element(player, research_container)
 		frame.container.scroll.table['clock_display'].caption = current_time
     end
 end)
