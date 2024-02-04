@@ -110,6 +110,7 @@ Roles.new_role('Trainee','TrMod')
 :allow{
     'command/admin-chat',
     'command/admin-marker',
+    'command/goto',
     'command/teleport',
     'command/bring',
     'command/give-warning',
