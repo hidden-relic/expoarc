@@ -4,19 +4,31 @@
 local Gui = require 'expcore.gui' --- @dep expcore.gui
 local Roles = require 'expcore.roles' --- @dep expcore.roles
 
-local rate_container =
+local rate_container
+
+local lookup_button =
+Gui.element{
+    type = 'button',
+    name = Gui.unique_static_name,
+    caption = 'lookup'
+}
+
+rate_container =
 Gui.element(function(definition, parent)
     local container = Gui.container(parent, definition.name, 200)
-	local scroll_table = Gui.scroll_table(container, 400, 4)
+    local button_table = Gui.scroll_table(container, 400, 1)
+    lookup_button(button_table)
 
-	scroll_table.add{
+	local disp_table = Gui.scroll_table(container, 400, 4)
+
+	disp_table.add{
         name = 'clock_text',
         caption = 'Time:',
         type = 'label',
         style = 'heading_1_label'
     }
 
-	scroll_table.add{
+	disp_table.add{
         name = 'clock_text_2',
         caption = '',
         type = 'label',
