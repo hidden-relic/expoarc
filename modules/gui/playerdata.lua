@@ -25,7 +25,12 @@ local function format_time_short(value)
 end
 
 local function format_number_n(n)
-    return format_number(math.floor(n)) .. string.format('%.2f', n % 1):sub(2)
+    if type(n) == 'number' then
+        return format_number(math.floor(n)) .. string.format('%.2f', n % 1):sub(2)
+
+    else
+        return 0
+    end
 end
 
 local playerStats = PlayerData.Statistics

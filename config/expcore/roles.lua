@@ -288,7 +288,7 @@ local default = Roles.new_role('Guest','')
     'command/preference',
     'command/set-preference',
     'command/connect',
-    'command/create-base-individual-spawn',
+    -- 'command/create-base-individual-spawn',
     'gui/player-list',
     'gui/rocket-info',
     'gui/science-info',
