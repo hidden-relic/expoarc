@@ -98,6 +98,7 @@ return {
     'modules.gui.playerdata',
     'modules.gui.surveillance',
     -- 'modules.gui.linked',
+    'modules.gui.rate-calc',
 		'modules.graftorio.require', -- graftorio
     'modules.gui.toolbar', -- must be loaded last to register toolbar handlers
 
