@@ -6,8 +6,6 @@ local Roles = require 'expcore.roles' --- @dep expcore.roles
 local Selection = require 'modules.control.selection' --- @dep modules.control.selection
 local RateCalcArea = 'CalcArea'
 
-local rate_container
-
 --- Align an aabb to the grid by expanding it
 local function aabb_align_expand(aabb)
     return {
@@ -44,7 +42,7 @@ Gui.element{
     end
 end}
 
-rate_container =
+local rate_container =
 Gui.element(function(definition, parent)
     local container = Gui.container(parent, definition.name, 200)
     local button_table = Gui.scroll_table(container, 400, 1)
