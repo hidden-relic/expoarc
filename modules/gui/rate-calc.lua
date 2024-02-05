@@ -34,9 +34,10 @@ Gui.element{
     type = 'button',
     name = Gui.unique_static_name,
     caption = 'lookup'
-}:on_click{function(player, element, _)
+}:on_click{function(player, _, _)
     if Selection.is_selecting(player, RateCalcArea) then
         Selection.stop(player)
+
     else
         Selection.start(player, RateCalcArea)
     end
