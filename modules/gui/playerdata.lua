@@ -16,13 +16,16 @@ local label_width = {
     ['total'] = 480
 }
 
-local function format_number_n(n)
-    if type(n) == 'number' then
-        return format_number(math.floor(n)) .. string.format('%.2f', n % 1):sub(2)
+local function format_time_short(value)
+    return format_time(value*3600, {
+        hours=true,
+        minutes=true,
+        seconds=false
+    })
+end
 
-    else
-        return '-'
-    end
+local function format_number_n(n)
+    return format_number(math.floor(n)) .. string.format('%.2f', n % 1):sub(2)
 end
 
 local playerStats = PlayerData.Statistics
@@ -40,9 +43,9 @@ local computed_stats = {
         end
     },
     SessionTime = {
-        default = format_time(0),
+        default = format_time_short(0),
         calculate = function(player_name)
-            return format_time((playerStats['Playtime']:get(player_name, 0) - playerStats['AfkTime']:get(player_name, 0)) / playerStats['JoinCount']:get(player_name, 1) * 3600)
+            return format_time_short((playerStats['Playtime']:get(player_name, 0) - playerStats['AfkTime']:get(player_name, 0)) / playerStats['JoinCount']:get(player_name, 1))
         end
     },
     BuildRatio = {
@@ -64,9 +67,9 @@ local computed_stats = {
         end
     },
     NetPlayTime = {
-        default = format_time(0),
+        default = format_time_short(0),
         calculate = function(player_name)
-            return format_time((playerStats['Playtime']:get(player_name, 0) - playerStats['AfkTime']:get(player_name, 0)) * 3600)
+            return format_time_short((playerStats['Playtime']:get(player_name, 0) - playerStats['AfkTime']:get(player_name, 0)))
         end
     },
     AFKTimeRatio = {
