@@ -406,6 +406,11 @@ function vlayer.get_statistics()
     }
 end
 
+--- add or reduce vlayer power
+function vlayer.energy_changed(power)
+    vlayer_data.storage.energy = vlayer_data.storage.energy + power
+end
+
 --- Circuit signals used for the statistics
 local circuit_signals = {
     total_surface_area = 'signal-A',
