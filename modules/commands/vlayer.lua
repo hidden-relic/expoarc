@@ -9,13 +9,11 @@ Commands.new_command('personal-battery-recharge', 'Recharge Player Battery upto 
 :add_param('amount', 'number-range', 0.2, 1)
 :register(function(player, amount)
     local armor = player.get_inventory(defines.inventory.character_armor)[1].grid
-    local vlayer_power = vlayer.get_statistics()['energy_storage']
 
     for i=1, #armor.equipment do
         if armor.equipment[i].energy < (armor.equipment[i].max_energy * amount) then
-            local energy_required = math.min((armor.equipment[i].max_energy * amount) - armor.equipment[i].energy, vlayer_power)
+            local energy_required = math.min((armor.equipment[i].max_energy * amount) - armor.equipment[i].energy, vlayer.get_statistics()['energy_storage'])
             armor.equipment[i].energy = armor.equipment[i].max_energy + energy_required
-            vlayer_power = vlayer_power - energy_required
             vlayer.energy_changed(-energy_required)
         end
     end
