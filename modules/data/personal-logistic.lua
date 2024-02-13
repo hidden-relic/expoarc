@@ -88,6 +88,6 @@ Commands.new_command('personal-logistic', 'Set Personal Logistic (-1 to cancel a
         end
 
     else
-        player.print('Player Logistic not researched')
+        player.print('Personal Logistic not researched')
     end
 end)
