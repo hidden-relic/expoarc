@@ -425,6 +425,11 @@ local circuit_signals = {
     time = 'signal-T',
 }
 
+--- get the circuits for the vlayer
+function vlayer.get_circuits()
+    return circuit_signals
+end
+
 --- Create a new circuit interface
 -- @tparam LuaSurface surface The surface to place the interface onto
 -- @tparam MapPosition position The position on the surface to place the interface at
