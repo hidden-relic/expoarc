@@ -8,7 +8,7 @@ local vlayer = require 'modules.control.vlayer'
 Commands.new_command('personal-battery-recharge', 'Recharge Player Battery upto a portion with vlayer')
 :add_param('amount', 'number-range', 0.2, 1)
 :register(function(player, amount)
-    if vlayer.get_statistics()['energy_sustained'] == 0 and vlayer.get_statistics()['energy_storage'] == 0 then
+    if vlayer.get_statistics()['energy_sustained'] == 0 then
         return Commands.print('vlayer need to be running to get this command work')
     end
 
