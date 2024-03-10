@@ -46,7 +46,7 @@ return {
     'modules.commands.waterfill',
     'modules.commands.artillery',
     'modules.commands.surface-clearing',
-    'modules.commands.oarc',
+    'modules.commands.separate_spawns',
     
     'modules.addons.chunk_cleanup',
     --- Addons
@@ -100,7 +100,7 @@ return {
     'modules.gui.module',
     'modules.gui.playerdata',
     'modules.gui.surveillance',
-    'modules.gui.oarc',
+    'modules.gui.separate_spawns',
     -- 'modules.gui.linked',
     -- 'modules.gui.rate-calc',
 		'modules.graftorio.require', -- graftorio
@@ -112,5 +112,5 @@ return {
     'config.expcore.command_runtime_disable', -- allows commands to be enabled and disabled during runtime
     'config.expcore.permission_groups', -- loads some predefined permission groups
     'config.expcore.roles', -- loads some predefined roles
-    'config.oarc',
+    'config.separate_spawns',
 }

@@ -53,7 +53,8 @@ local function get_surrounding_positions(position, n)
     return t
 end
 
-local function check_chunk(surface, position, area)
+local function check_chunk(position, area)
+    local surface = game.surfaces[1]
     local entities_chunks = config.entities_chunks
     local pollution_chunks = config.pollution_chunks
     local forces = {}
@@ -122,7 +123,6 @@ end
 
 Event.add(defines.events.on_chunk_generated, function(event)
     if config.enabled then
-        if event.surface ~= game.surfaces['oarc'] then return end
         if get_table_count(chunk_tracker) >= config.max_chunks_to_track then return end
         local surface = event.surface
         local position = event.position
@@ -144,7 +144,7 @@ Event.on_nth_tick(config.time_between_scans, function(event)
         local count = 0
         for _, position in pairs(t) do
             local area = {left_top=table_multiplication(position, 32), right_bottom=table_addition(table_multiplication(position, 32), 32)}
-            if check_chunk(game.surfaces['oarc'], position, area) then
+            if check_chunk(position, area) then
                 count = count + 1
             end
         end

@@ -304,7 +304,7 @@ local default = Roles.new_role('Guest','')
     'gui/research',
     'gui/autofill',
     'gui/module',
-    'gui/oarc'
+    'gui/separate_spawns'
 }
 
 --- Jail role

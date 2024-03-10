@@ -79,7 +79,7 @@ return {
     research_queue_from_start=true, --- @setting research_queue_from_start when true the research queue is useable from the start
     friendly_fire=false, --- @setting friendly_fire weather players will be able to attack each other on the same force
     enemy_expansion=false, --- @setting enemy_expansion a catch all for in case the map settings file fails to load
-    chart_radius=500*32, --- @setting chart_radius the number of tiles that will be charted when the map starts
+    chart_radius=3*32, --- @setting chart_radius the number of tiles that will be charted when the map starts
     items = { --- @setting items items and there condition for being given
         -- ['item-name'] = function(amount_made, production_stats, player) return <Number> end -- 0 means no items given
         -- Plates

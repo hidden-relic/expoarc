@@ -396,11 +396,11 @@ Gui.element(function(_, parent)
     return container
 end))
 
--- OARC
+-- Separate Spawns
 
---- Content area for oarc
--- @element oarc_content
-Tab({'oarc.tab'}, {'oarc.tab-tooltip'},
+--- Content area for separate spawns
+-- @element separate_spawns_content
+Tab({'separate_spawns.tab'}, {'separate_spawns.tab-tooltip'},
 Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
     local player = Gui.get_player_from_element(parent)

@@ -1,5 +1,5 @@
 local Event = require 'utils.event'
-local config = require 'config.oarc'
+local config = require 'config.separate_spawns'
 local Global = require 'utils.global'
 local vlayer = require 'modules.control.vlayer'
 local crash_site = require 'crash-site'
@@ -13,7 +13,7 @@ end)
 local spawns = {}
 
 local function create_crash_site(position)
-    crash_site.create_crash_site(game.surfaces['oarc'], {
+    crash_site.create_crash_site(game.surfaces[1], {
         x = position.x + 15,
         y = position.y - 25
     }, {
@@ -104,7 +104,7 @@ local function downgrade_area(position)
         ["biter-spawner"] = false,
         ["spitter-spawner"] = false
     }
-    local surface = game.surfaces['oarc']
+    local surface = game.surfaces[1]
     
     for name, zone in pairs(config.zones) do
         if zone.full_downgrade then
@@ -226,10 +226,10 @@ local function create_shared_entities(player, center)
         combinator = {x=center.x + config.resources.ore.random.radius + 1, y = center.y},
         output_power = {x=center.x + config.resources.ore.random.radius, y = center.y}
     }
-    vlayer.create_input_interface(game.surfaces['oarc'], vlayer_entities.input_chest, player.name)
-    vlayer.create_output_interface(game.surfaces['oarc'], vlayer_entities.output_chest, player.name)
-    vlayer.create_energy_interface(game.surfaces['oarc'], vlayer_entities.output_power, player.name)
-    vlayer.create_circuit_interface(game.surfaces['oarc'], vlayer_entities.combinator, player.name)
+    vlayer.create_input_interface(game.surfaces[1], vlayer_entities.input_chest, player.name)
+    vlayer.create_output_interface(game.surfaces[1], vlayer_entities.output_chest, player.name)
+    vlayer.create_energy_interface(game.surfaces[1], vlayer_entities.output_power, player.name)
+    vlayer.create_circuit_interface(game.surfaces[1], vlayer_entities.combinator, player.name)
     
     local tiles = {}
     for x=(vlayer_entities.input_chest.x-2), (vlayer_entities.output_chest.x+2), 1 do
@@ -237,7 +237,7 @@ local function create_shared_entities(player, center)
             table.insert(tiles, {name = "tutorial-grid", position = {x,y}})
         end
     end
-    game.surfaces['oarc'].set_tiles(tiles)
+    game.surfaces[1].set_tiles(tiles)
 end
 
 
@@ -246,7 +246,7 @@ local function create_new_spawn(player, center)
     local radius = config.spawn_radius
     local rad_sq = radius ^ 2
     local border = radius*math.pi
-    local surface = game.surfaces['oarc']
+    local surface = game.surfaces[1]
     
     downgrade_area(center)
     
@@ -285,7 +285,7 @@ local function create_new_spawn(player, center)
 end
 
 function spawns.distance_chosen(player, choice)
-    local surface = game.surfaces['oarc']
+    local surface = game.surfaces[1]
     local get_position = choice == 'near' and get_near_spawn_position or get_far_spawn_position
     local spawn_position = get_position()
     while not check_distance_from_players(spawn_position) do
@@ -341,7 +341,7 @@ function spawns.reset_player(player)
         player.get_inventory(defines.inventory.character_ammo).clear()
         player.get_inventory(defines.inventory.character_armor).clear()
         player.get_inventory(defines.inventory.character_trash).clear()
-        tp(player, {x=0, y=0}, game.surfaces['oarc'])
+        tp(player, {x=0, y=0}, game.surfaces[1])
         for _, chunk in pairs(area) do
             player.surface.delete_chunk(chunk)
         end
@@ -404,7 +404,8 @@ Event.add(defines.events.on_player_created, function (event)
         
         game.difficulty_settings.technology_price_multiplier = config.technology_price_multiplier or 1
         
-        local surface = game.create_surface('oarc', adjust_map_gen(game.surfaces[1].map_gen_settings))
+        local surface = game.surfaces[1]
+        surface.map_gen_settings = adjust_map_gen(surface.map_gen_settings)
         surface.request_to_generate_chunks({x=0, y=0}, 2)
         surface.force_generate_chunk_requests()
         local chunk_generated = surface.is_chunk_generated({x=1, y=1})
@@ -441,7 +442,7 @@ Event.add(defines.events.on_player_created, function (event)
     player.get_inventory(defines.inventory.character_ammo).clear()
     player.get_inventory(defines.inventory.character_armor).clear()
     player.get_inventory(defines.inventory.character_trash).clear()
-    tp(player, {x=0, y=0}, game.surfaces['oarc'])
+    tp(player, {x=0, y=0}, game.surfaces[1])
 end)
 
 return spawns
