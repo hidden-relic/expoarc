@@ -15,6 +15,9 @@ Event.add(defines.events.on_player_created, function(event)
         local p = player.position
         player.force.chart(player.surface, {{p.x-r, p.y-r}, {p.x+r, p.y+r}})
     end
+end)
+
+local function advanced_start(player)
     -- spawn items
     for item, callback in pairs(items) do
         if type(callback) == 'function' then
@@ -25,17 +28,26 @@ Event.add(defines.events.on_player_created, function(event)
             if success and count > 0 then
                 player.insert{name=item, count=count}
             end
+        else
+            player.insert{name=item, count=callback}
         end
     end
-
+    
     if config.armor.enable then
         player.insert{name=config.armor.main, count=1}
-
-        for _, item in pairs(config.armor.item) do
-            player.insert{name=item.equipment, count=item.count}
+        
+        if player.get_inventory(defines.inventory.character_armor)[1] then
+            local armor = player.get_inventory(defines.inventory.character_armor)[1].grid
+            if armor then
+                for _, item in pairs(config.armor.item) do
+                    for i=1, item.count do
+                        armor.put({name=item.equipment})
+                    end
+                end
+            end
         end
     end
-end)
+end
 
 Event.on_init(function()
     remote.call('freeplay', 'set_created_items', {})
@@ -52,3 +64,5 @@ Event.on_init(function()
         end
     end
 end)
+
+return advanced_start

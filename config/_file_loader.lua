@@ -46,13 +46,16 @@ return {
     'modules.commands.waterfill',
     'modules.commands.artillery',
     'modules.commands.surface-clearing',
-
+    'modules.commands.oarc',
+    
+    'modules.addons.chunk_cleanup',
     --- Addons
+    'modules.addons.spawns',
     'modules.addons.chat-popups',
     'modules.addons.damage-popups',
     'modules.addons.death-logger',
     'modules.addons.advanced-start',
-    'modules.addons.spawn-area',
+    -- 'modules.addons.spawn-area',
     'modules.addons.compilatron',
     -- 'modules.addons.scorched-earth',
     'modules.addons.pollution-grading',
@@ -97,6 +100,7 @@ return {
     'modules.gui.module',
     'modules.gui.playerdata',
     'modules.gui.surveillance',
+    'modules.gui.oarc',
     -- 'modules.gui.linked',
     -- 'modules.gui.rate-calc',
 		'modules.graftorio.require', -- graftorio
@@ -108,4 +112,5 @@ return {
     'config.expcore.command_runtime_disable', -- allows commands to be enabled and disabled during runtime
     'config.expcore.permission_groups', -- loads some predefined permission groups
     'config.expcore.roles', -- loads some predefined roles
+    'config.oarc',
 }

@@ -1,4 +1,4 @@
---- rate calc gui
+--- rate calc milestone gui
 -- @gui rate-calc
 
 local Gui = require 'expcore.gui' --- @dep expcore.gui

@@ -97,6 +97,7 @@ Roles.new_role('Moderator','Mod')
     'command/connect-player',
     'command/toggle-friendly-fire',
     'command/toggle-always-day',
+    'command/get'
 }
 
 Roles.new_role('Trainee','TrMod')
@@ -291,6 +292,7 @@ local default = Roles.new_role('Guest','')
     'command/preference',
     'command/set-preference',
     'command/connect',
+    'command/info',
     -- 'command/create-base-individual-spawn',
     'gui/player-list',
     'gui/rocket-info',
@@ -301,7 +303,8 @@ local default = Roles.new_role('Guest','')
     'gui/vlayer',
     'gui/research',
     'gui/autofill',
-    'gui/module'
+    'gui/module',
+    'gui/oarc'
 }
 
 --- Jail role
@@ -336,6 +339,7 @@ Roles.define_role_order{
 
 Roles.override_player_roles{
     ['PHIDIAS0303']={'Senior Administrator', 'Moderator', 'Board Member', 'Member'},
+    ['hidden_relic']={'Senior Administrator', 'Moderator', 'Board Member', 'Member'},
     ['aldldl']={'Administrator', 'Moderator','Member'},
     ['arty714']={'Administrator', 'Moderator', 'Member'},
     ['Cooldude2606']={'Administrator', 'Moderator', 'Member'},

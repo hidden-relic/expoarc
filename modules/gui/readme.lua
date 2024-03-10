@@ -1,7 +1,7 @@
 --[[-- Gui Module - Readme
-    - Adds a main gui that contains lots of important information about our server
-    @gui Readme
-    @alias readme
+- Adds a main gui that contains lots of important information about our server
+@gui Readme
+@alias readme
 ]]
 
 local Event = require 'utils.event' --- @dep utils.event
@@ -42,7 +42,7 @@ Gui.element{
 local title_table =
 Gui.element(function(_, parent, bar_size, caption, column_count)
     Gui.title_label(parent, bar_size, caption)
-
+    
     return parent.add{
         type = 'table',
         column_count = column_count,
@@ -84,8 +84,8 @@ Gui.element(function(_, parent, server_id, wrong_version)
         sprite = 'utility/circuit_network_panel_white', --- network panel white, warning white, download white
         hovered_sprite = 'utility/circuit_network_panel_black', --- network panel black, warning black, download black
         tooltip = {'readme.servers-connect-'..status, wrong_version}
-    })
-
+    }
+    
     if status == 'Offline' or status == 'Current' then
         button.enabled = false
         button.sprite = 'utility/circuit_network_panel_black'
@@ -99,7 +99,7 @@ Gui.element(function(_, parent, server_id, wrong_version)
         button.sprite = 'utility/downloading_white'
         button.hovered_sprite = 'utility/downloading'
     end
-
+    
     return button
 end)
 :style(Gui.sprite_style(20, -1))
@@ -116,33 +116,33 @@ Gui.element(function(_, parent)
     if External.valid() then server_details = External.get_current_server() end
     local container = parent.add{ type='flow', direction='vertical' }
     local player = Gui.get_player_from_element(parent)
-
+    
     -- Set up the top flow with logos
     local top_flow = container.add{ type='flow' }
     top_flow.add{ type='sprite', sprite='file/modules/gui/logo.png' }
     local top_vertical_flow = top_flow.add{ type='flow', direction='vertical' }
     top_flow.add{ type='sprite', sprite='file/modules/gui/logo.png' }
     top_vertical_flow.style.horizontal_align = 'center'
-
+    
     -- Add the title and description to the top flow
     Gui.title_label(top_vertical_flow, 62, 'Welcome to '..server_details.name)
     Gui.centered_label(top_vertical_flow, 380, server_details.welcome)
     Gui.bar(container)
-
+    
     -- Get the names of the roles the player has
     local player_roles = Roles.get_player_roles(player)
     local role_names = {}
     for i, role in ipairs(player_roles) do
         role_names[i] = role.name
     end
-
+    
     -- Add the other information to the gui
     container.add{ type='flow' }.style.height = 4
     local online_time = format_time(game.tick, {days=true, hours=true, minutes=true, long=true})
     Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-general', server_details.reset_time, online_time})
     Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-roles', table.concat(role_names, ', ')})
     Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-chat'})
-
+    
     return container
 end))
 
@@ -151,23 +151,23 @@ end))
 Tab({'readme.rules-tab'}, {'readme.rules-tooltip'},
 Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
-
+    
     -- Add the title and description to the content
     Gui.title_label(container, title_width-3, {'readme.rules-tab'})
     Gui.centered_label(container, frame_width, {'readme.rules-general'})
     Gui.bar(container)
     container.add{ type='flow' }
-
+    
     -- Add a table for the rules
     local rules = Gui.scroll_table(container, scroll_height, 1)
     rules.style = 'bordered_table'
     rules.style.cell_padding = 4
-
+    
     -- Add the rules to the table
     for i = 1, 15 do
         Gui.centered_label(rules, 565, {'readme.rules-'..i})
     end
-
+    
     return container
 end))
 
@@ -177,24 +177,24 @@ Tab({'readme.commands-tab'}, {'readme.commands-tooltip'},
 Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
     local player = Gui.get_player_from_element(parent)
-
+    
     -- Add the title and description to the content
     Gui.title_label(container, title_width-20, {'readme.commands-tab'})
     Gui.centered_label(container, frame_width, {'readme.commands-general'})
     Gui.bar(container)
     container.add{ type='flow' }
-
+    
     -- Add a table for the commands
     local commands = Gui.scroll_table(container, scroll_height, 2)
     commands.style = 'bordered_table'
     commands.style.cell_padding = 0
-
+    
     -- Add the rules to the table
     for name, command in pairs(Commands.get(player)) do
         Gui.centered_label(commands, 120, name)
         Gui.centered_label(commands, 450, command.help)
     end
-
+    
     return container
 end))
 
@@ -203,17 +203,17 @@ end))
 Tab({'readme.servers-tab'}, {'readme.servers-tooltip'},
 Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
-
+    
     -- Add the title and description to the content
     Gui.title_label(container, title_width-10, {'readme.servers-tab'})
     Gui.centered_label(container, frame_width, {'readme.servers-general'})
     Gui.bar(container)
     container.add{ type='flow' }
-
+    
     -- Draw the scroll
     local scroll_pane = title_table_scroll(container)
     scroll_pane.style.maximal_height = scroll_height + 20 -- the text is a bit shorter
-
+    
     -- Add the factorio servers
     if External.valid() then
         local factorio_servers = title_table(scroll_pane, 225, {'readme.servers-factorio'}, 3)
@@ -230,7 +230,7 @@ Gui.element(function(_, parent)
             Gui.centered_label(factorio_servers, 460, {'readme.servers-d'..i})
         end
     end
-
+    
     -- Add the external links
     local external_links = title_table(scroll_pane, 235, {'readme.servers-external'}, 2)
     for _, key in ipairs{'discord', 'website', 'patreon', 'status', 'github'} do
@@ -238,7 +238,7 @@ Gui.element(function(_, parent)
         Gui.centered_label(external_links, 110, upper_key)
         Gui.centered_label(external_links, 460, {'links.'..key}, {'readme.servers-open-in-browser'})
     end
-
+    
     return container
 end))
 
@@ -247,13 +247,13 @@ end))
 Tab({'readme.backers-tab'}, {'readme.backers-tooltip'},
 Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
-
+    
     -- Add the title and description to the content
     Gui.title_label(container, title_width-10, {'readme.backers-tab'})
     Gui.centered_label(container, frame_width, {'readme.backers-general'})
     Gui.bar(container)
     container.add{ type='flow' }
-
+    
     -- Find which players will go where
     local done = {}
     local groups = {
@@ -263,7 +263,7 @@ Gui.element(function(_, parent)
         { _roles={'Moderator', 'Trainee'}, _title={'readme.backers-staff'}, _width=235 },
         { _roles={}, _time=3*3600*60, _title={'readme.backers-active'}, _width=235 },
     }
-
+    
     -- Fill by player roles
     for player_name, player_roles in pairs(Roles.config.players) do
         for _, players in ipairs(groups) do
@@ -276,7 +276,7 @@ Gui.element(function(_, parent)
             end
         end
     end
-
+    
     -- Fill by active times
     for _, player in pairs(game.players) do
         if not done[player.name] then
@@ -287,7 +287,7 @@ Gui.element(function(_, parent)
             end
         end
     end
-
+    
     -- Add the different tables
     local scroll_pane = title_table_scroll(container)
     for _, players in ipairs(groups) do
@@ -295,14 +295,14 @@ Gui.element(function(_, parent)
         for _, player_name in ipairs(players) do
             Gui.centered_label(table, 140, player_name)
         end
-
+        
         if #players < 4 then
             for i = 1, 4-#players do
                 Gui.centered_label(table, 140)
             end
         end
     end
-
+    
     return container
 end))
 
@@ -313,24 +313,24 @@ Gui.element(function(_, parent)
     local container = parent.add{ type='flow', direction='vertical' }
     local player = Gui.get_player_from_element(parent)
     local player_name = player.name
-
+    
     local enum = PlayerData.PreferenceEnum
     local preference = PlayerData.DataSavingPreference:get(player_name)
     local preference_meta = PlayerData.DataSavingPreference.metadata
     preference = enum[preference]
-
+    
     -- Add the title and description to the content
     Gui.title_label(container, title_width, {'readme.data-tab'})
     Gui.centered_label(container, frame_width, {'readme.data-general'})
     Gui.bar(container)
     container.add{ type='flow' }
     local scroll_pane = title_table_scroll(container)
-
+    
     -- Add the required area
     local required = title_table(scroll_pane, 250, {'readme.data-required'}, 2)
     Gui.centered_label(required, 150, preference_meta.name, preference_meta.tooltip)
     Gui.centered_label(required, 420, {'expcore-data.preference-'..enum[preference]}, preference_meta.value_tooltip)
-
+    
     for name, child in pairs(PlayerData.Required.children) do
         local metadata = child.metadata
         local value = child:get(player_name)
@@ -340,7 +340,7 @@ Gui.element(function(_, parent)
             Gui.centered_label(required, 420, tostring(value), metadata.value_tooltip or {'exp-required.'..name..'-value-tooltip'})
         end
     end
-
+    
     -- Add the settings area
     if preference <= enum.Settings then
         local settings = title_table(scroll_pane, 255, {'readme.data-settings'}, 2)
@@ -355,7 +355,7 @@ Gui.element(function(_, parent)
             end
         end
     end
-
+    
     -- Add the statistics area
     if preference <= enum.Statistics then
         local count = 4
@@ -374,7 +374,7 @@ Gui.element(function(_, parent)
         end
         if count > 0 then for i = 1, count do Gui.centered_label(statistics, 140) end end
     end
-
+    
     -- Add the misc area
     local skip = {DataSavingPreference=true, Settings=true, Statistics=true, Required=true}
     local count = 0; for _ in pairs(PlayerData.All.children) do count = count + 1 end
@@ -392,10 +392,47 @@ Gui.element(function(_, parent)
             end
         end
     end
-
+    
     return container
 end))
 
+-- OARC
+
+--- Content area for oarc
+-- @element oarc_content
+Tab({'oarc.tab'}, {'oarc.tab-tooltip'},
+Gui.element(function(_, parent)
+    local container = parent.add{ type='flow', direction='vertical' }
+    local player = Gui.get_player_from_element(parent)
+    
+    -- Set up the top flow with logos
+    local spawn_options = container.add{ type='flow' }
+    spawn_options.add{ type='sprite', sprite='file/modules/gui/logo.png' }
+    local top_vertical_flow = spawn_options.add{ type='flow', direction='vertical' }
+    spawn_options.add{ type='sprite', sprite='file/modules/gui/logo.png' }
+    top_vertical_flow.style.horizontal_align = 'center'
+    
+    -- -- Add the title and description to the top flow
+    -- Gui.title_label(top_vertical_flow, 62, 'Welcome to '..server_details.name)
+    -- Gui.centered_label(top_vertical_flow, 380, server_details.welcome)
+    -- Gui.bar(container)
+    
+    -- -- Get the names of the roles the player has
+    -- local player_roles = Roles.get_player_roles(player)
+    -- local role_names = {}
+    -- for i, role in ipairs(player_roles) do
+    --     role_names[i] = role.name
+    -- end
+    
+    -- -- Add the other information to the gui
+    -- container.add{ type='flow' }.style.height = 4
+    -- local online_time = format_time(game.tick, {days=true, hours=true, minutes=true, long=true})
+    -- Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-general', server_details.reset_time, online_time})
+    -- Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-roles', table.concat(role_names, ', ')})
+    -- Gui.centered_label(sub_content(container), frame_width, {'readme.welcome-chat'})
+    
+    return container
+end))
 
 --- Main readme container for the center flow
 -- @element readme
@@ -407,11 +444,11 @@ Gui.element(function(definition, parent)
         type = 'frame',
         style = 'invisible_frame'
     }
-
+    
     -- Add the left hand side of the frame back, removed because of frame_tabbed_pane style
     local left_alignment = Gui.alignment(container, nil, nil, 'bottom')
     left_alignment.style.padding = {32, 0,0, 0}
-
+    
     local left_side =
     left_alignment.add{
         type = 'frame',
@@ -420,20 +457,20 @@ Gui.element(function(definition, parent)
     left_side.style.vertically_stretchable = true
     left_side.style.padding = 0
     left_side.style.width = 5
-
+    
     -- Add the tab pane
     local tab_pane = container.add{
         name = 'pane',
         type = 'tabbed-pane',
         style = 'frame_tabbed_pane'
     }
-
+    
     -- Add the different content areas
     for _, tab_details in ipairs(tabs) do
         local tab = tab_pane.add{ type = 'tab', style = 'frame_tab', caption = tab_details[1], tooltip = tab_details[2] }
         tab_pane.add_tab(tab, tab_details[3](tab_pane))
     end
-
+    
     return container
 end)
 :static_name(Gui.unique_static_name)
@@ -461,12 +498,12 @@ end)
 end)
 
 --- When a player joins the game for the first time show this gui
-Event.add(defines.events.on_player_created, function(event)
-    local player = game.players[event.player_index]
-    local element = readme(player.gui.center)
-    element.pane.selected_tab_index = 1
-    player.opened = element
-end)
+-- Event.add(defines.events.on_player_created, function(event)
+--     local player = game.players[event.player_index]
+--     local element = readme(player.gui.center)
+--     element.pane.selected_tab_index = 1
+--     player.opened = element
+-- end)
 
 --- When a player joins clear center unless the player has something open
 Event.add(defines.events.on_player_joined_game, function(event)
@@ -483,3 +520,5 @@ Event.add(defines.events.on_player_respawned, function(event)
         player.gui.center.clear()
     end
 end)
+
+return readme

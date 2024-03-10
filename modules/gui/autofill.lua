@@ -62,7 +62,7 @@ Gui.element(function(_, parent, entity_name)
         sprite = 'utility/confirm_slot',
         tooltip = {'autofill.toggle-entity-tooltip', rich_img('item', entity_name)},
         style = 'shortcut_bar_button_green'
-    })
+    }
 end)
 :style(Gui.sprite_style(22))
 :on_click(function(player, element, _)
